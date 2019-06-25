@@ -2,7 +2,7 @@
 layout: about
 permalink: /
 title: Mitchell Wortsman
-description: Pre-doctoral Young Investigator at the Allen Institute for AI
+description: Seattle, WA.
 
 profile:
   align: right
@@ -12,10 +12,14 @@ news: true
 social: true
 ---
 
-Previously: Applied Math / Computer Science Undergrad at Brown.
+I'm an incoming PhD student at the University of Washington, where I will be working with Professor [Ali Farhadi](https://homes.cs.washington.edu/~ali/).
 
-Present: Predoctoral researcher at the Prior Group at the Allen Institute for AI.
+I am currently wrapping up a wonderful year as part of the [PRIOR Group](https://prior.allenai.org/) at the [Allen Institute for AI (AI2)](https://allenai.org/)
+advised by [Roozbeh Mottaghi](https://cs.stanford.edu/~roozbeh/). At AI2 I have also been mentored by [Mohammad Rastegari](https://allenai.org/team/mohammadr/),
+[Kiana Ehsani](https://homes.cs.washington.edu/~kianae/) and [Ali](https://homes.cs.washington.edu/~ali/).
 
-Future: Incoming PhD student at the University of Washington.
+Previously, I completed my undergraduate degree in Applied Mathematics and Computer Science at Brown University. For my [senior
+honors thesis](/publications/) I was advised by [Kavita Ramanan](https://www.brown.edu/academics/applied-mathematics/kavita-ramanan).
+During undergrad I completed internships at Facebook (advised by [Yannis Kalantidis](http://www.skamalas.com/)) & Microsoft.
 
-Reach me at [mitchellw@allenai.org](mailto:mitchellw@allenai.org).
+I am interested broadly in Machine Learning.
