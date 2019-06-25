@@ -19,8 +19,16 @@ years: [2019]
 {% endfor %}
 
 -----
-
-#### Undergraduate Thesis
+  
+  
+### Senior Thesis (Undergrad)
 
 
 {% bibliography -f undergradthesis %}
+
+### Awards & Honors
+
+<ul>
+    <li>AI2 Fellowship in AI (2019)</li>
+    <li>Jerome L Stein Memorial Award for Undergraduate Excellence (2018)</li>
+</ul>

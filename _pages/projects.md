@@ -5,44 +5,24 @@ permalink: /misc/
 description: in progress.
 ---
 
-{% for project in site.projects %}
+## Academic
 
-{% if project.redirect %}
-<div class="project">
-    <div class="thumbnail">
-        <a href="{{ project.redirect }}" target="_blank">
-        {% if project.img %}
-        <img class="thumbnail" src="{{ project.img | prepend: site.baseurl | prepend: site.url }}"/>
-        {% else %}
-        <div class="thumbnail blankbox"></div>
-        {% endif %}    
-        <span>
-            <h1>{{ project.title }}</h1>
-            <br/>
-            <p>{{ project.description }}</p>
-        </span>
-        </a>
-    </div>
+{% for project in site.projects reversed %}
+<div>
+    <a href="{{ project.url | prepend: site.baseurl | prepend: site.url }}">
+        <h4>{{ project.title }}</h4>
+        <p>{{ project.description }}</p>
+    </a>
 </div>
-{% else %}
+{% endfor %}
 
-<div class="project ">
-    <div class="thumbnail">
-        <a href="{{ project.url | prepend: site.baseurl | prepend: site.url }}">
-        {% if project.img %}
-        <img class="thumbnail" src="{{ project.img | prepend: site.baseurl | prepend: site.url }}"/>
-        {% else %}
-        <div class="thumbnail blankbox"></div>
-        {% endif %}    
-        <span>
-            <h1>{{ project.title }}</h1>
-            <br/>
-            <p>{{ project.description }}</p>
-        </span>
-        </a>
-    </div>
+## Personal
+
+{% for project in site.misc reversed %}
+<div>
+    <a href="{{ project.url | prepend: site.baseurl | prepend: site.url }}">
+        <h4>{{ project.title }}</h4>
+        <p>{{ project.description }}</p>
+    </a>
 </div>
-
-{% endif %}
-
 {% endfor %}
