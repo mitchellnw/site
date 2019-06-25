@@ -1,0 +1,261 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage{cancel}
+\usepackage{float}
+\usepackage{mathtools}
+%\usepackage[]{mcode}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows}
+
+%Page formatting
+\usepackage[letterpaper,voffset=-.5in,bmargin=3cm,footskip=1cm]{geometry}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.1in}
+\allowdisplaybreaks
+\headheight 15pt
+\headsep 10pt
+
+% Common Commands
+\newcommand\N{\mathbb N}
+\newcommand\Z{\mathbb Z}
+\newcommand\R{\mathbb R}
+\newcommand\Q{\mathbb Q}
+\newcommand\lcm{\operatorname{lcm}}
+\newcommand\setbuilder[2]{\ensuremath{\left\{#1\;\middle|\;#2\right\}}}
+\newcommand\E{\operatorname{E}}
+\newcommand\V{\operatorname{V}}
+\newcommand\Pow{\ensuremath{\operatorname{\mathcal{P}}}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% 22 style
+\newcommand\hint[1]{\textbf{Hint}: #1}
+\newcommand\note[1]{\textbf{Note}: #1}
+\newenvironment{22enumerate}{\begin{enumerate}[a.]\itemsep0em}{\end{enumerate}}
+\newenvironment{22itemize}{\begin{itemize}\itemsep0em}{\end{itemize}}
+\fancypagestyle{firstpagestyle} {
+  \renewcommand{\headrulewidth}{0pt}%
+  \lhead{\textbf{CSCI 0220}}%
+  \chead{\textbf{Discrete Structures and Probability}}%
+  \rhead{Klivans}%
+}
+
+\pagestyle{fancyplain}
+
+\newcommand\EX{\mathds{E}}
+\newcommand\PR{\mathds{P}}
+\newcommand\zlam{Z_\lambda}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+  \thispagestyle{firstpagestyle}
+  \begin{center}
+    {\large \textbf{Recitation 5}}
+    
+    {\large Three's Trick}
+  \end{center}
+  
+   \section*{Review}	
+	
+	\textbf{Defn 1:} We say that $a \mid b$ ($a$ divides $b$) when $b = ka$ for some $k \in \Z$. 
+
+	\textbf{Defn 2:} $a \equiv b \pmod m$ if $m \mid (b-a)$. In other words, $a$ and $b$ have the same remainder upon division by $m$. Convince yourself that these statements are equivelant. 
+
+\textbf{Properties of Congruence Relations:}
+
+For $a,b \in \mathbb{Z}^+$, if $a \equiv b \mod{m}$, then
+\begin{itemize}
+    \item $a + c\equiv b + c\mod{m}$ for $c \in \mathbb{Z}$
+    \item $ac \equiv bc \pmod{m}$ for $c \in \mathbb{Z}$
+    \item $a^n \equiv b^n \mod{m}$ for $n \in \mathbb{Z^+}$
+\end{itemize}
+If we also have $c \equiv d \pmod{m}$, then
+\begin{itemize}
+    \item $a + c\equiv b + d\mod{m}$
+    \item $ac\equiv bd\mod{m}$
+\end{itemize}
+
+\textbf{Theorom 1:} For any $a,b \in \Z$ there exists $u,v \in \Z$ such that $au + bv = gcd(a,b)$. In words, we say that $a$ and $b$ can be written as a linear combination of their gcd.
+
+\textbf{Theorem 2:} The congruence $ax \equiv c \pmod{m}$ has a solution if and only if the gcd$(a,m)$ divides $c$. 
+\[
+\gcd(a,m) \mid c.
+\]
+
+ 
+	\subsection*{Warm-Up}
+
+	\begin{enumerate}[a.]
+		\item Given $a \equiv b \pmod{m}$, prove $a + c\equiv b + c\pmod{m}$ for $c \in \mathbb{Z}$.
+
+		\begin{mdframed}
+		\vspace{2.8cm}
+		\end{mdframed}
+
+
+		\item Given $a \equiv b \pmod{m}$, prove $ac\equiv bc\pmod{m}$ for $c \in \mathbb{Z}$.
+
+
+		\begin{mdframed}
+		\vspace{4cm}
+		\end{mdframed}
+
+		\item Given $a \equiv b \pmod{m}$, prove $a^2\equiv b^2\pmod{m}$.
+
+		\begin{mdframed}
+		\vspace{5cm}
+		\end{mdframed}
+
+
+		\item For every odd integer $n$, prove that $n^4 -1$ is divisible by 8.
+		
+		\begin{mdframed}
+		\vspace{5cm}
+		\end{mdframed}
+	\end{enumerate}
+
+	\section*{Section Lesson - Modular Inverses and the Three's Trick}
+
+	Say we are trying to solve for $x$ in the equation $8x = 2$, how would we do so?
+
+	Answer: we would multiply both sides by $8^{-1} = \frac{1}{8}$. This is called the inverse of 8.
+	
+	\begin{align*}
+		&\frac{1}{8}\cdot 8 \cdot x  = \frac{1}{8} \cdot 2 \\
+		&\Rightarrow x = 0.25
+	\end{align*}	
+
+	And in general, if we are trying to solve for $x$ in the equaltion $ax = c$ we simply multiply both sides by $a^{-1} = \frac{1}{a}$. 
+
+	The $a^{-1}$ notation indicates that $a^{-1}\cdot a = 1$. 
+
+	However, it is not so simple when we are working with congruence relations.
+
+	For example, there is \textbf{no solution} for $x$ in the equation $8x \equiv 2 \pmod{12}$. 
+
+	In general, $ax \equiv c \pmod{m}$ has a solution if and only if $\gcd(a,m) \mid c$. (In english: if and only if the gcd of $a$ and $m$ divides $c$.)
+
+	\begin{enumerate}[a.]
+		\item Prove that if $gcd(a,m) \mid c$ then  $ax \equiv c \pmod{m}$ has a solution.
+		
+		\hint{Let $d = \gcd(a,m)$. From Theorom 1 above we know that $d = au + mv$ for some $u,v\in \Z$.}
+
+		\hint{Since $d \mid c$ then $c = kd$ for some $k \in \Z$}
+
+		\begin{mdframed}
+			\vspace{10cm}
+		\end{mdframed}
+
+		\item Use the strategy you found above to solve for $4x \equiv 6 \pmod{14}$. 
+
+Use the fact that $4\cdot 4 + (-1)\cdot 14 = 2$.
+
+		\begin{mdframed}
+			\vspace{6cm}
+		\end{mdframed}
+		
+	\end{enumerate}
+
+		\subsection*{Modular Inverses Explained}
+
+		A modular inverse for $a$ mod $m$ is a number $a^{-1}$ such that $a \cdot a^{-1} \equiv 1 \pmod{m}$.
+
+		In other words, a modular inverse for $a$ mod $m$ is the $x$ which solves $ax \equiv 1 \pmod{m}$.
+
+		\begin{enumerate}[a.]
+		\setcounter{enumi}{2}
+			\item If $a$ has a modular inverse mod $m$ then what is $\gcd(a,m)$.
+			\begin{mdframed}
+			\vspace{1cm}
+			\end{mdframed}
+
+		\end{enumerate}
+
+		A modular inverse is extremely helpful in solving equations $ax \equiv b \pmod{m}$.
+
+		If $a$ has a modular inverse mod ${m}$ then $x \equiv a^{-1}b \pmod{m}$.
+
+		
+		\begin{enumerate}[a.]
+					\setcounter{enumi}{3}
+			\item Use the technique from question ``a" to find the modular inverse of $4$ mod 9.
+
+			\hint Use the fact that 28-27 = 1.
+			
+			\begin{mdframed}
+			\vspace{3cm}
+			\end{mdframed}
+
+			\item Use $4^{-1}$ to solve for $x$ in the equation $4x \equiv 3 \pmod{9}$. Verify your answer.
+
+			\begin{mdframed}
+			\vspace{3cm}
+			\end{mdframed}
+			
+		\end{enumerate}
+
+		\subsection*{The Threes Trick}
+
+		Here is a trick to determine if a number $n$ is divisible by 3:
+		
+		\textit{``If the sum of the digits of $n$ is divisble by 3, so is $n$."}
+
+		For example, 261 is divisble by 3 since $2+6+1 = 9$.
+
+		You are going to prove this.
+
+		\begin{enumerate}[a.]
+							\setcounter{enumi}{5}
+			\item For any $k \in \N$, what is $10^k$ congruent to mod 3?
+
+			\begin{mdframed}
+			\vspace{1cm}
+			\end{mdframed}
+
+			\item For any $k \in \N$, what is the modular inverse of $10^k$ mod 3>
+
+			Recall the modular inverse is the $x$ which solves $10^k x\equiv 1 \pmod 3$
+
+			\begin{mdframed}
+			\vspace{1cm}
+			\end{mdframed}
+
+			\item Prove the ``Threes trick" by expanding a number in terms of its digits.
+
+
+			\begin{mdframed}
+			\vspace{5.5cm}
+			\end{mdframed}
+
+
+
+			\item Does the Threes trick work when we are not in Base 10? What numbers does it apply for in base $b$?
+			
+
+			\begin{mdframed}
+			\vspace{5.5cm}
+			\end{mdframed}
+			
+		\end{enumerate}
+
+		
+
+	
+	
+
+\end{document}

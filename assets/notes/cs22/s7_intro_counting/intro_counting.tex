@@ -1,0 +1,164 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage{cancel}
+\usepackage{float}
+\usepackage{mathtools}
+%\usepackage[]{mcode}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows}
+
+%Page formatting
+\usepackage[letterpaper,voffset=-.5in,bmargin=3cm,footskip=1cm]{geometry}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.1in}
+\allowdisplaybreaks
+\headheight 15pt
+\headsep 10pt
+
+% Common Commands
+\newcommand\N{\mathbb N}
+\newcommand\Z{\mathbb Z}
+\newcommand\R{\mathbb R}
+\newcommand\Q{\mathbb Q}
+\newcommand\lcm{\operatorname{lcm}}
+\newcommand\setbuilder[2]{\ensuremath{\left\{#1\;\middle|\;#2\right\}}}
+\newcommand\E{\operatorname{E}}
+\newcommand\V{\operatorname{V}}
+\newcommand\Pow{\ensuremath{\operatorname{\mathcal{P}}}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% 22 style
+\newcommand\hint[1]{\textbf{Hint}: #1}
+\newcommand\note[1]{\textbf{Note}: #1}
+\newenvironment{22enumerate}{\begin{enumerate}[a.]\itemsep0em}{\end{enumerate}}
+\newenvironment{22itemize}{\begin{itemize}\itemsep0em}{\end{itemize}}
+\fancypagestyle{firstpagestyle} {
+  \renewcommand{\headrulewidth}{0pt}%
+  \lhead{\textbf{CSCI 0220}}%
+  \chead{\textbf{Discrete Structures and Probability}}%
+  \rhead{Klivans}%
+}
+
+\pagestyle{fancyplain}
+
+\newcommand\EX{\mathds{E}}
+\newcommand\PR{\mathds{P}}
+\newcommand\zlam{Z_\lambda}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+  \thispagestyle{firstpagestyle}
+  \begin{center}
+    {\large \textbf{Recitation 7}}
+    
+    {\large Big O's and Pigeons}
+
+  \end{center}
+
+	\section*{Review}
+
+
+
+	\textbf{Defn 1:} (Big O). We say $f(x) \in O(g(x))$ if $g$ grows `faster' than $f$.
+
+		Formally, if $f(x) \in O(g(x))$ then $\exists c,k$ such that $|f(x)| < c|g(x)|$ for all $x > k$. 
+
+	\textbf{Thm:} (Pigeonhole principle). If we take k + 1 pigeons, and put them into k holes, some hole must contain at least two pigeons.
+
+	More generally, if we put $n$ objects into $k$ boxes, then some box has at least $\lceil n/k \rceil$ objects.
+
+
+	\subsection*{Warm-Up}
+
+	\begin{enumerate}[a.]
+
+		\item Answer true or false for all of the following
+		\begin{enumerate}[i.]
+			\item The relation $R = \{(f,g) \ | \ f(n) \in O(g(n))\}$ is reflexive.
+			\item The relation $R = \{(f,g) \ | \ f(n) \in O(g(n))\}$  is transitive.
+			\item The relation $R = \{(f,g) \ | \ f(n) \in O(g(n))\}$  is an equivelance relation.
+			\item $2n \in O(n)$
+			\item $2n \in O(n^2)$
+			\item $n^3 \in O(n^2)$
+			\item $100n^2 \in O(n^2)$
+			\item $n^{100} \in O(2^n)$
+	\end{enumerate}
+
+		\pagebreak
+
+		\item $f: A \rightarrow B$ where $|A| > |B|$ and $A$ and $B$ are finite. Show $f$ is not an injection.
+		
+		\begin{mdframed}
+			\vspace{6cm}
+		\end{mdframed}
+
+		\item $f: A \rightarrow B$ where $|A| = |B|$ where $A$ and $B$ are finite. Show that if $f$ is not a surjection then $f$ is not an injection.
+		
+		\begin{mdframed}
+			\vspace{6cm}
+		\end{mdframed}
+
+		\textbf{Checkpoint - Call over a TA}
+
+		\pagebreak
+	
+
+		\item There are 9 planes and 13 airports. Each day every plane visits 3 different airports. Prove that there must exist one airport each day which is visited by at least 3 planes. 
+
+		\begin{mdframed}
+			\vspace{4cm}
+		\end{mdframed}	
+
+		\item Given an arbitrary sequence of 100 integers, prove that there exists a consecutive subsequence whose sum is divisible by 100.
+
+		\hint Start by considering consecutive subsequences starting at the first element.
+
+		\begin{mdframed}
+			\vspace{12cm}
+		\end{mdframed}
+
+		
+		
+\end{enumerate}	
+
+		\textbf{Checkpoint - Call over a TA}
+
+		\pagebreak
+
+		\section*{Pigeonhole Problems}
+	
+		\subsection*{Ice Cream Social Problem}
+		There are $n$ people at the ice cream social. Throughout the night they have a series of dance partners. 
+
+		\begin{enumerate}[i.]
+			\item The minimum number of dance partners someone can have is 0. What is the maximum number of dance partners?
+			
+			\begin{mdframed}
+			\vspace{2cm}
+			\end{mdframed}
+
+			\item Prove that 2 people will have the same number of dance partners by the end of the night.
+
+			\begin{mdframed}
+			\vspace{10cm}
+			\end{mdframed}
+
+		\end{enumerate}
+
+\end{document}

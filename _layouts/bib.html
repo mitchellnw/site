@@ -79,14 +79,17 @@
   {% if entry.supp %}
     [<a href="{{ entry.supp | prepend: '/assets/pdf/' | prepend: site.baseurl | prepend: site.url }}" target="_blank">Supp</a>]
   {% endif %}
+  {% if entry.code %}
+    [<a href="{{ entry.code }}" target="_blank">Code</a>]
+  {% endif %}
   {% if entry.poster %}
     [<a href="{{ entry.poster | prepend: '/assets/pdf/' | prepend: site.baseurl | prepend: site.url }}" target="_blank">Poster</a>]
   {% endif %}
   {% if entry.slides %}
     [<a href="{{ entry.slides | prepend: '/assets/pdf/' | prepend: site.baseurl | prepend: site.url }}" target="_blank">Slides</a>]
   {% endif %}
-  {% if entry.code %}
-    [<a href="{{ entry.code }}" target="_blank">Code</a>]
+  {% if entry.site %}
+    [<a href="{{ entry.site }}" target="_blank">Site</a>]
   {% endif %}
   </span>
 

@@ -1,0 +1,243 @@
+\documentclass[12pt,letterpaper]{article}
+
+%Packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{dsfont}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage{cancel}
+\usepackage{float}
+\usepackage{mathtools}
+%\usepackage[]{mcode}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{automata,arrows}
+
+%Page formatting
+\usepackage[letterpaper,voffset=-.5in,bmargin=3cm,footskip=1cm]{geometry}
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.1in}
+\allowdisplaybreaks
+\headheight 15pt
+\headsep 10pt
+
+% Common Commands
+\newcommand\N{\mathbb N}
+\newcommand\Z{\mathbb Z}
+\newcommand\R{\mathbb R}
+\newcommand\Q{\mathbb Q}
+\newcommand\lcm{\operatorname{lcm}}
+\newcommand\setbuilder[2]{\ensuremath{\left\{#1\;\middle|\;#2\right\}}}
+\newcommand\E{\operatorname{E}}
+\newcommand\V{\operatorname{V}}
+\newcommand\Pow{\ensuremath{\operatorname{\mathcal{P}}}}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% 22 style
+\newcommand\hint[1]{\textbf{Hint}: #1}
+\newcommand\note[1]{\textbf{Note}: #1}
+\newenvironment{22enumerate}{\begin{enumerate}[a.]\itemsep0em}{\end{enumerate}}
+\newenvironment{22itemize}{\begin{itemize}\itemsep0em}{\end{itemize}}
+\fancypagestyle{firstpagestyle} {
+  \renewcommand{\headrulewidth}{0pt}%
+  \lhead{\textbf{CSCI 0220}}%
+  \chead{\textbf{Discrete Structures and Probability}}%
+  \rhead{Klivans}%
+}
+
+
+
+\pagestyle{fancyplain}
+
+\newcommand\EX{\mathds{E}}
+\newcommand\PR{\mathds{P}}
+\newcommand\zlam{Z_\lambda}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%%%%%%%%%%%%%%%% COMPILE WITH \soltrue or \solfalse %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifsol
+\soltrue  % SOLUTIONS
+\solfalse % NO SOLUTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%% solution help %%%%%%%%%%%%%%%%%%%%%
+\newcommand{\solu}[2]{ \begin{mdframed} \ifsol #2 \else \vspace{#1} \fi \end{mdframed} }
+\newcommand{\solt}{ \ifsol (T) \fi }
+\newcommand{\solf}{ \ifsol (F) \fi }
+\newcommand{\solm}[1]{\ifsol \textit{(#1)} \fi}
+
+
+\begin{document}
+  \thispagestyle{firstpagestyle}
+  \begin{center}
+    {\large \textbf{Recitation 7}}
+    
+    {\large Logic and Complexity}
+
+  \end{center}
+
+	\section*{Review}
+
+	Operations on propositions:
+
+\begin{tabular}{c|c|c|c|c|c|c|c}
+ $P$ & $Q$ & $\lnot P$ & $P \wedge Q$ & $P \vee Q$ & $P \oplus Q$ & $P \implies Q$ & $P \iff Q$\\
+\hline
+T & T & F & T & T & F & T & T\\
+T & F & F & F & T & T & F & F\\
+F & T & T & F & T & T & T & F\\
+F & F & T & F & F & F & T & T
+\end{tabular}
+
+where the notation is interpreted as follows
+\begin{itemize}
+\item $\lnot$ means ``not''
+\item $\wedge$ means ``and''
+\item $\vee$ means ``or''
+\item $\oplus$ means ``or, but not both of'', which we call ``xor''
+\item $\implies$ means ``implies''
+\item $\iff$ means ``if and only if''
+\end{itemize}
+
+	\subsection*{Warm-Up}
+
+	\begin{enumerate}[a.]
+
+		\item Answer true or false for all of the following. ($\equiv$ means that each propositions always have the same truth value). 
+		\begin{enumerate}[i.]
+			\item $p \lor q \equiv \neg p \land \neg q$ \solt
+			\item $(p \land q) \lor r \equiv p \land (q \lor r)$ \solf
+			\item $p \Rightarrow \neg q \equiv p \lor q$ \solt
+			\item $p \Rightarrow q \equiv p \land \neg q$ \solf
+			\item $p \Leftrightarrow q \equiv (p \land q) \lor (\neg p \land \neg q)$ \solt
+			\item $p \land \neg q \equiv \neg (\neg p \lor q)$ \solt
+			\item $(p \lor q) \land r \equiv (p \land r) \lor (q \land r)$ \solt
+	\end{enumerate}
+
+
+		\item Give an assigment to the variables $x_1,x_2,x_3$ which makes the following logical expression evaluate to true.
+
+		$$(x_1 \lor x_2)\land (\neg x_1 \lor \neg x_2 \lor \neg x_3) \land x_3$$
+		\begin{mdframed}
+		\vspace{2cm}
+		\end{mdframed}
+
+		\item Is the following logical expression is always true? Explain your answer.
+
+		$$(x_1 \land x_2)\lor (\neg x_1 \land \neg x_2 \land \neg x_3) \lor (x_3 \land \neg x_3) $$
+
+			\begin{mdframed}
+			\vspace{4cm}
+			\end{mdframed}
+
+		\item Come up with a logical expression with three variables which has \textbf{only one} assignment to the variables which makes it true.
+
+			\begin{mdframed}
+			\vspace{4cm}
+			\end{mdframed}
+
+		\item Given inputs $p$ and $q$, create a circuit which outputs $p \oplus q$ using only \textbf{not gates}, \textbf{or gates}, and \textbf{and gates}.
+
+			\begin{mdframed}
+			\vspace{6cm}
+			\end{mdframed}
+
+		\item Given inputs $x_1$, $x_2$ and $x_3$, create a circuit which outputs true if and only if exactly one input is true.
+
+			\begin{mdframed}
+			\vspace{10cm}
+			\end{mdframed}
+			
+	\end{enumerate}
+
+	\section*{Section Lesson - P vs. NP}
+
+	\textit{Everything past this point is outside the scope of CS22, though it will reinforce concepts from the class. These concepts are covered further in CS1010 and CS157.}
+
+	An algorithm is simply a series of steps. It can be expressed as a computer program, instructions in a cookbook, directions on a map, as a plain sentence, etc. For example, consider the following \texttt{maximum algorithm} that finds the maximum element given \texttt{list} as input.
+\begin{verbatim}
+v = -infinity
+for each element x in list:
+    v = max(v, x)
+output v
+\end{verbatim}
+It is often helpful to decribe the \textbf{run time} of an algorithm. The \textbf{run time} can be thought of as the number of steps that the algorithm takes, and is often expressed as a function as the size of the input to the algorithm
+
+For example, if $n$ is the size of the input list to the \texttt{maximum algorithm} then the algorithm has a run time of $f(n) = n$ steps. 
+
+Give an informal inductive argument as to why this is true. (Hint: Start by considering the base case of a list with one item. The one item is clearly the maximum so we return it in 1 step.)
+
+\begin{mdframed}
+\vspace{8cm}
+\end{mdframed}
+
+An algorithm is considered \emph{fast} if its run time is a \textbf{polynomial}. This polynomial can be $n^2$, or even $n^{100} + 4n^{63}$, it doesn't matter. If the run time is polynomial then it is feasible for a computer. If the run time is instead exponential, like $2^n$, then it is infeasible for a computer if $n$ is large. The terms \textbf{polynomial time} and \textbf{fast} are used synonymously for the rest of this handout. 
+
+	Consider the following algorithm which determines if there is any assignment to a logical expression with variables $x_1,...,x_n$ that is ever true. (The problem of determining if a logical expression evaluates to true is called \texttt{SAT}).
+	
+	\texttt{Try \textbf{every} assignment to the variables.}
+
+	\texttt{If the logical expression ever evaluates to true, return true.}
+
+	\begin{enumerate}[a.]
+		\setcounter{enumi}{9}
+		\item What is the run time of this algorithm in terms of $n$, the number of variables. 
+
+		\hint How many assignments do you have to try? Think in terms of 0/1 strings.
+		\begin{mdframed}
+		\vspace{3cm}
+		\end{mdframed}
+	\end{enumerate}
+
+	P is the set of problems that can be solved in \textbf{polynomial time}. In other words, a problem in P can be solved by an algorithm that has a polynomial run time.
+
+	Finding the maximum element in a list is a P problem, as is sorting a list.
+
+	Unfortunately, the algorithm given above is the best known algorithm for determining if a logical expression ever evaluates to true (solving SAT). Therefore it is not a P problem (as far as we know).
+
+	\subsection*{NP}
+	
+A problem is in NP if, given a candidate solution to the problem, there exists a fast algorithm to determine whether the candidate is in fact a valid solution.
+
+	For example, determining if a logical expression ever evaluates to true (SAT) is an NP problem. We don't know how to quickly find an assignment to the variables which makes the expression true, but given an assignment to the variables we can quickly check that this assignment makes the expression true by just constructing the corresponding circuit. 
+
+		\begin{enumerate}[a.]
+		\setcounter{enumi}{10}
+		\item \textit{Challenge:} Another NP problem is the following: Given a number $n$ where $n=pq$ for two large primes $p$ and $q$, can you find $p$ and $q$? Explain why this is an NP problem.
+
+		\begin{mdframed}
+		\vspace{3cm}
+		\end{mdframed}
+	\end{enumerate}
+	At first it looks like this is a P problem as well because you can simply check all pairs of numbers between 0 and $\sqrt{n}$. However, when you encode a number using 0's and 1's in a computer, it takes $\log_2(n)$ bits. Therefore looping through $\sqrt{n}$ numbers is exponential in the size of your input (we understand that this is confusing so please call over a TA if you wish to discuss this further).
+	
+	Most computer scientists beleive that P $\not=$ NP but no one can come up with a proof. There is a million dollar reward for finding one. If you were to prove that P = NP then RSA would be useless. 
+
+	\subsection*{\textit{Challenge:} NP-Hard}
+
+	It turns out that for any problem in NP, you can come up with a logic circuit for it where determining if the circuit ever evaluates true corresponds to solving the original problem.
+
+	Therefore, if you can find a ``fast" algorithm for determining if a logical circuit ever outputs true then P = NP.
+
+	Changing one problem into another problem is called a ``reduction".
+
+	A problem $p$ is NP-Hard if there is a reduction from every problem in NP to $p$.
+
+	Another example of a problem that is NP-Hard is determining if a graph is 3-colorable, which you will learn about soon.
+
+	\subsection*{\textit{Challenge:} Not in NP}
+
+	There are problems that we think are even harder then NP problems. For example, given a logical expression, is it always true?
+  
+
+\end{document}
