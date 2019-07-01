@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Great Papers
-description: Collection of some amazing (recent) ML papers.
+description: Collection of some great (recent) ML papers.
 ---
 
 A collection of some amazing ML papers. _{via x}_ is used to credit person _x_ for showing me the paper.  
