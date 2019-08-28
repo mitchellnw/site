@@ -12,15 +12,15 @@ years: [2019]
 
 
 ## Publications
-  
+
 {% for y in page.years %}
   <h3 class="year">{{y}}</h3>
   {% bibliography -f papers -q @*[year={{y}}]* %}
 {% endfor %}
 
 -----
-  
-  
+
+
 ### Senior Thesis (Undergrad)
 
 
