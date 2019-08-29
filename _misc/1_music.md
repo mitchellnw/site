@@ -5,7 +5,7 @@ description: Starting in April, 2019.
 ---
 
 
-* Ginger, BROCKHAMPTON (July, 2019)
+* Ginger, BROCKHAMPTON (August, 2019)
 * i,i, Bon Iver (August, 2019)
 * The Lost Boy, YBN Cordae (July, 2019)
 * CASE STUDY 01, Daniel Caesar (June, 2019)
