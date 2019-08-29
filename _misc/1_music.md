@@ -4,7 +4,9 @@ title: Best New Albums
 description: Starting in April, 2019.
 ---
 
-* Emily Along, Florist (July, 2019)
+
+* Ginger, BROCKHAMPTON (July, 2019)
+* i,i, Bon Iver (August, 2019)
 * The Lost Boy, YBN Cordae (July, 2019)
 * CASE STUDY 01, Daniel Caesar (June, 2019)
 * U.F.O.F, Big Thief (May, 2019)
