@@ -7,3 +7,5 @@ description: How to learn the connectivity of an Artificial Neural Network
 by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _The University of Washington_, and _XNOR.AI_.
 
 In this post we discuss the most interesting bits from our recent paper on [Discovering Neural Wirings](https://arxiv.org/abs/1906.00586). Primarily, the connectivity patterns of Artificial Neural Networks (ANNs) are manually defined or largely constrained. A recent [critique](https://www.nature.com/articles/s41467-019-11786-6) argues that this is in contrast with the brain, as _"...animals are born with highly structured brain connectivity, which enables them to learn very rapidly."_ 
+
+{% include dnw-demo.html %}
