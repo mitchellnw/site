@@ -30,8 +30,8 @@ google_analytics: UA-XXXXXXXXX # out your google-analytics code
 # -----------------------------------------------------------------------------
 # Blog
 # -----------------------------------------------------------------------------
-blog_name: Blog
-blog_description: Coming sooon...
+blog_name: Blog ...
+blog_description:
 
 # Pagination
 paginate: 4
