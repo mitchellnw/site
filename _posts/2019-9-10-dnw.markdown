@@ -24,6 +24,12 @@ A concurrent work on [Weight Agnostic Neural Networks](https://weightagnostic.gi
 
 ### _Static Neural Graphs (SNGs)_: A Convenient Abstraction for a Feed Forward ANN
 
+We now introduce a convenient abstraction for a feed-forward ANN -- a _Static Neural Graph (SNG)_. Our goal is then to learn the optimal _edge set_ of the SNG. We skim over some low level details below and invite you to reference the [paper](https://arxiv.org/abs/1906.00586).
+
+An _SNG_ consists of nodes $$\mathcal{V} = \{1,...,n\}$$ and edges $$\mathcal{E}$$. An _SNG_ must be directed and acyclic, and so we only allow for edges $$(i,j)$$ when $$i \lt j$$.
+
+Each node $$v$$ has output $$\mathcal{Z}_v$$ and input $$\mathcal{I}_v$$. The input data flows into the network through a designated set of input nodes $$\mathcal{V}_0$$ and the output of the network is computed via a designated set of output nodes.
+
 ### An Algorithm for Discovering Neural Wirings
 
 ### Lottery Tickets? Sparse Networks?
