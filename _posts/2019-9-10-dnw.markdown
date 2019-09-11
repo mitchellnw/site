@@ -6,6 +6,20 @@ description: How to learn the connectivity of an Artificial Neural Network
 ---
 by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _The University of Washington_, and _XNOR.AI_.
 
-In this post we discuss the most interesting bits from our recent paper on [Discovering Neural Wirings](https://arxiv.org/abs/1906.00586). Primarily, the connectivity patterns of Artificial Neural Networks (ANNs) are manually defined or largely constrained. A recent [critique](https://www.nature.com/articles/s41467-019-11786-6) argues that this is in contrast with the brain, as _"...animals are born with highly structured brain connectivity, which enables them to learn very rapidly."_ 
+In this post we discuss the most interesting bits from our recent paper on [Discovering Neural Wirings](https://arxiv.org/abs/1906.00586) (to appear at NeurIPS 2019). Primarily, the connectivity patterns of Artificial Neural Networks (ANNs) are manually defined or largely constrained. In contrast, we relax the typical notion of layers to allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during training -- as we learn the network parameters we also learn the connectivity. Move the slider below to see how the wiring changes when a small network is trained on MNIST for a few epochs.
 
 {% include dnw-demo.html %}
+
+### Why Care About Wiring?
+
+Before the advent of modern ANNs, researchers would manually engineer good _features_ (high dimensional vector representations). Good features may now be _learned_ with ANNs, but the _architecture_ of the ANN must be specified instead. Accordingly, a myriad of recent work in [Neural Architecture Search (NAS)](https://arxiv.org/abs/1611.01578) has focused on _learning_ the architecture of an ANN.
+However, NAS still searches among a set of manually designed building blocks and so ANN connectivity remains largely constrained. In contrast, [RandWire](https://arxiv.org/pdf/1904.01569.pdf) explores a diverse set of connectivity patterns by considering ANNs which are randomly wired.
+Although randomly wired ANNs are competitive with NAS, their connectivity is fixed during training.
+
+We propose a method for jointly learning the parameters and wiring of an ANN during training. We demonstrate that our method of _Discovering Neural Wirings (DNW)_ outperforms manually-designed and randomly wired ANNs.
+
+ANNs are inspired by the biological neural networks of the brain. There are, however, countless fundamental differences between these two systems. A recent Nature Communications article (aptly entitled [A critique of pure learning and what artificial neural networks can learn from animal brains](https://www.nature.com/articles/s41467-019-11786-6)) argues that the connectivity of an animal brain enables rapid learning. Accordingly, _"this suggests wiring topology and network architecture as a target for optimization in artificial systems."_ We hope that this work proves a useful step in this direction.
+
+### _Static Neural Graphs (SNGs)_: A Convenient Abstraction for a Feed Forward ANN
+
+### An Algorithm for Discovering Neural Wirings
