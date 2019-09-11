@@ -28,9 +28,9 @@ A concurrent work on [Weight Agnostic Neural Networks](https://weightagnostic.gi
 
 ### Lottery Tickets? Sparse Networks?
 
-### Appendix A: Math!
-
 {% include sparse-graph.html %}
+
+### Appendix A: Proofs
 
 ### Appendix B: _Dynamic Neural Graphs (DNGs)_
 
