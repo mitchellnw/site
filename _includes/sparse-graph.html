@@ -83,7 +83,7 @@ var h = rect.height - margin.top - margin.bottom;
 
 var parseDate = (x) => parseInt(x)
 
-var scaleX = d3.scaleTime()
+var scaleX = d3.scaleLinear()
   .range([0,w]);
 
 var scaleY = d3.scaleLinear()
@@ -91,9 +91,12 @@ var scaleY = d3.scaleLinear()
 
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+
 var xAxis = d3.axisBottom()
   .scale(scaleX)
-  .tickFormat(d3.format("d"));
+  .tickFormat(function(d, i) {
+    return i === 0 ? 'Sparsity' : d;
+  });
 
 var yAxis = d3.axisLeft()
   .scale(scaleY)
@@ -178,10 +181,11 @@ svg.append("g")
 .append("text")
 .attr("transform","rotate(-90)")
 .attr("y",6)
+  .attr("x",-7)
 .attr("dy",".71em")
 .style("text-anchor","end")
 .style("fill","black")
-.text("ImageNet Top-1 Accuracy 2");
+.text("ImageNet Top-1 Accuracy");
 
 var city = svg.selectAll(".city")
 .data(cities)
