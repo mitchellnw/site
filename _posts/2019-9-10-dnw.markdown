@@ -2,7 +2,7 @@
 layout: post
 title: Discovering Neural Wirings
 date: 2019-9-10
-description: How to learn the connectivity of an Artificial Neural Network
+description: How we learn the connectivity of an Artificial Neural Network.
 ---
 by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _University of Washington_, and _XNOR.AI_.
 
@@ -28,7 +28,7 @@ We now introduce a convenient abstraction for a feed-forward ANN -- a _Static Ne
 
 An _SNG_ consists of nodes $$\mathcal{V} = \{1,...,n\}$$ and edges $$\mathcal{E}$$. An _SNG_ must be directed and acyclic, and so we only allow for edges $$(i,j)$$ when $$i \lt j$$.
 
-Each node $$v$$ has output $$\mathcal{Z}_v$$ and input $$\mathcal{I}_v$$. The input data flows into the network through a designated set of input nodes $$\mathcal{V}_0$$ and the output of the network is computed via a designated set of output nodes.
+A node $$v$$ has output $$\mathcal{Z}_v$$ and input $$\mathcal{I}_v$$. The input data $$X$$ flows into the network through a designated set of nodes $$\mathcal{V}_0$$ and the output of the network is likewise computed via $$\mathcal{V}_E$$. For all nodes $$v \in \mathcal{V} \setminus \mathcal{V}_0$$, we compute the  
 
 ### An Algorithm for Discovering Neural Wirings
 
