@@ -40,18 +40,31 @@ $$
 
 where $$w_{u,v}$$ and $$\theta_v$$ are the learned network parameters. The output of the network is then computed via a designated set of nodes $$\mathcal{V}_E$$.
 
-In this work we are designing models for Computer Vision, and so each node resembles a single _channel_. Accordingly, $$f_{\theta_v}$$ performs a convolution over a 2-dimensional matrix (followed by [Batch Norm](https://arxiv.org/abs/1502.03167) and ReLU).
+In this work we are designing models for Computer Vision, and so each node resembles a single _channel_. Accordingly, $$f_{\theta_v}$$ performs a convolution over a 2-dimensional matrix (followed by [BatchNorm](https://arxiv.org/abs/1502.03167) and ReLU).
 
 ### An Algorithm for Discovering Neural Wirings
 
-How do we learn the optimal edge set $$\mathcal{E}$$ during training? We follow recent work (such as [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635)) and attribute the "importance" of a parameter to its magnitude. Accordingly, the link between node $$u$$ and $$v$$ is considered important if $$ \lvert w_{u,v} \rvert \gg 0$$.
+How do we learn the optimal edge set $$\mathcal{E}$$ during training? We follow recent work (such as [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635)) and attribute the "importance" of a parameter to its magnitude. Accordingly, the link between node $$u$$ and $$v$$ is considered _important_ if $$ \lvert w_{u,v} \rvert \gg 0$$.
 
-The edge set is chosen by taking the edges with the highest magnitude weight:
+At each training iteration the edge set is chosen by taking the edges with the highest magnitude weight:
 
 $$\mathcal{E} = \{ (u,v) \ : \ \lvert w_{u,v} \rvert > \tau \textrm{ and } u \lt v \}$$
 
 where $$\tau$$ is chosen so that there are exactly $$k$$ edges and $$u \lt v$$ ensures that the graph is acyclic.
 
+All that remains is to choose a weight update rule for the edge weights. Recall that we often use [backpropogation](https://www.nature.com/articles/323533a0). In short, gradients from a loss term $$\mathcal{L}$$ are passed backwards though the network to compute gradients with respect to the network parameters. The parameters are often then updated via _stochastic gradient descent_ with some learning rate $$\alpha$$. Conveniently, standard backprop will automatically compute the quantity
+
+$$g_v = - \alpha \frac{\partial \mathcal{L}}{\partial \mathcal{I}_v}$$
+
+Informally, the quantity $$g_v$$ describes how the network wants $$\mathcal{I}_v$$ to change so that the loss will decrease. Our rule is therefore to strengthen the connection between $$u$$ and $$v$$ when $$\mathcal{Z}_u$$ aligns with $$g_v$$. Informally, if node $$u$$ can take $$\mathcal{I}_v$$ where the loss _wants_ it to go, we should add an edge from $$u$$ to $$v$$. We therefore modify $$w_{u,v}$$ via our update rule
+
+$$w_{u,v} \gets w_{u,v} + \left\langle \mathcal{Z}_u, g_v \right\rangle$$
+
+where $$\langle \cdot, \cdot \rangle$$ denotes an inner product (these quantities are implicitly treated as vectors).
+
+In practice $$w_{u,v}$$ changes only a small amount at each training iteration. However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{u,v} \rvert$$ will strengthen to a point where edge $$(u,v)$$ replaces a weaker edge. We show [below](#appendix-a-proofs) that when swapping does occur, it is beneficial under some assumptions.
+
+When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term to the update rule as standard practice with SGD (weight decay should eventually remove dead ends). See the [paper](https://arxiv.org/abs/1906.00586) for yet another interpretation of the update rule as performing an approximation in the backwards pass.
 
 ### Lottery Tickets? Sparse Networks?
 
@@ -62,3 +75,5 @@ where $$\tau$$ is chosen so that there are exactly $$k$$ edges and $$u \lt v$$ e
 ### Appendix B: _Dynamic Neural Graphs (DNGs)_
 
 ### Appendix C: Efficient _SNGs_
+
+### Appendix D: FAQ
