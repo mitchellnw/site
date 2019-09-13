@@ -64,16 +64,43 @@ where $$\langle \cdot, \cdot \rangle$$ denotes an inner product (these quantitie
 
 In practice $$w_{u,v}$$ changes only a small amount at each training iteration. However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{u,v} \rvert$$ will strengthen to a point where edge $$(u,v)$$ replaces a weaker edge. We show [below](#appendix-a-proofs) that when swapping does occur, it is beneficial under some assumptions.
 
-When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term to the update rule as standard practice with SGD (weight decay should eventually remove dead ends). See the [paper](https://arxiv.org/abs/1906.00586) for yet another interpretation of the update rule as performing an approximation in the backwards pass.
+When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term as is standard practice with SGD (weight decay should eventually remove dead ends). See the [paper](https://arxiv.org/abs/1906.00586) for yet another interpretation of the update rule as performing an approximation in the backwards pass.
 
-### Lottery Tickets? Sparse Networks?
+### Wirings at Scale
+
+We employ the following two strategies for discovering wirings at scale:
+
+1. We chain together multiple graphs, $$G_1, G_2, ..., G_n$$ where the output of $$G_i$$ is the input to $$G_{i+1}$$. The _input nodes_ perform a strided convolution and the spatial resolution is fixed throughout the remaining nodes in the graph.
+
+2. The depth of the graph is limited to be $$\ell$$ by partitioning the nodes into blocks $$\mathcal{B}_1,...,\mathcal{B}_\ell$$. We then only allow connections between nodes $$u \in \mathcal{B}_i$$ and $$v \in \mathcal{B}_j$$ if $$i \lt j$$.
+
+For an even comparison, we consider the exact same structure and number of edges as MobileNet V1 if it were interpreted as a chain of graphs. By learning the connectivity we boost the ImageNet accuracy by ~10% in the low compute setting.
+
+| Model | ImageNet Top-1 Accuracy |
+| ------------- |-------------|
+| Original MobileNet V1 (x 0.25)  | 50.6 %  |
+| Random Graph MobileNet V1 (x 0.225) | 53.3 % |
+| Discovered MobileNet V1 (x 0.225)| 60.9 % |
+
+
+### Sparse Networks? Lottery Tickets?
+
+A few recent papers have challenged our understanding of sparse neural networks.
+In [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635),
+Frankle and Carbin demonstrate that dense ANNs contain
+subnetworks that can be effectively trained in isolation. However,
+their process for uncovering these so-called _winning tickets_ is
+expensive as it first requires a dense network to be trained.
+In [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840.pdf),
+Dettmers and Zettlemoyer show that ANNs may be trained while maintaining sparse weights.
+
+This work has encouraged us to employ our algorithm for 
 
 {% include sparse-graph.html %}
+
 
 ### Appendix A: Proofs
 
 ### Appendix B: _Dynamic Neural Graphs (DNGs)_
 
-### Appendix C: Efficient _SNGs_
-
-### Appendix D: FAQ
+### Appendix C: FAQ
