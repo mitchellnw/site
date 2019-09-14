@@ -85,7 +85,7 @@ For an even comparison, we consider the exact same structure and number of edges
 
 ### Sparse Networks? Lottery Tickets?
 
-A few recent papers have challenged our understanding of sparse neural networks.
+A few recent papers have challenged our understanding of sparse ANNs.
 In [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635),
 Frankle and Carbin demonstrate that dense ANNs contain
 subnetworks that can be effectively trained in isolation. However,
@@ -94,7 +94,8 @@ expensive as it first requires a dense network to be trained.
 In [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840.pdf),
 Dettmers and Zettlemoyer show that ANNs may be trained while maintaining sparse weights.
 
-This work has encouraged us to employ our algorithm for 
+The field of sparse ANNs is primarily concerned with finding sparse subnetworks
+of dense ANNs. 
 
 {% include sparse-graph.html %}
 
