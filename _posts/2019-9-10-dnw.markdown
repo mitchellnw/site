@@ -6,7 +6,8 @@ description: How we learn the connectivity of an Artificial Neural Network.
 ---
 blog by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _University of Washington_, and _XNOR.AI_.
 
-In this post we discuss the most interesting bits from our recent paper on [**Discovering Neural Wirings**](https://arxiv.org/abs/1906.00586) (to appear at NeurIPS 2019). Primarily, the connectivity patterns of Artificial Neural Networks (ANNs) are manually defined or largely constrained. In contrast, we relax the typical notion of layers to allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during training -- as we learn the network parameters we also learn the connectivity. Move the slider below to see how the wiring changes when a small network is trained on MNIST for a few epochs.
+In this post we discuss the most interesting bits from our recent paper on [**Discovering Neural Wirings**](https://arxiv.org/abs/1906.00586) (to appear at NeurIPS 2019). Primarily, the connectivity patterns of Artificial Neural Networks (ANNs) are manually defined or largely constrained. In contrast, we relax the typical notion of layers to allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during training -- as we learn the network parameters we also learn the connectivity. In our pursuit
+we also arrive at the following [conclusion](#sparse-networks-lottery-tickets-overparameterization): it is possible to train a model that is **small** during inference but **still overparameterized** during training. Move the slider below to see how the wiring changes when a small network is trained on MNIST for a few epochs.
 
 {% include dnw-demo.html %}
 
@@ -80,15 +81,15 @@ We employ the following two strategies for discovering wirings at scale:
 For an even comparison, we consider the exact same structure and number of edges as MobileNet V1 if it were interpreted as a chain of graphs. By learning the connectivity we boost the ImageNet accuracy by ~10% in the low compute setting.
 
 | Model | ImageNet Top-1 Accuracy |
-| ------------- |-------------|
+| :-------------: | :-------------: |
 | Original MobileNet V1 (x 0.25)  | 50.6 %  |
 | Random Graph MobileNet V1 (x 0.225) | 53.3 % |
 | Discovered MobileNet V1 (x 0.225)| 60.9 % |
 
 
-### Sparse Networks? Lottery Tickets?
+### Sparse Networks? Lottery Tickets? Overparameterization?
 
-A few recent papers have challenged our understanding of sparse ANNs.
+The past few years have witnessed illuminating work in the field of sparse ANNs.
 In [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635),
 Frankle and Carbin demonstrate that dense ANNs contain
 subnetworks that can be effectively trained in isolation. However,
@@ -98,13 +99,88 @@ In [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840.pdf),
 Dettmers and Zettlemoyer show that ANNs may be trained while maintaining sparse weights.
 
 The field of sparse ANNs is primarily concerned with finding sparse subnetworks
-of dense ANNs.
+within dense ANNs. Ideally, the sparse subnetworks should have comparative performance
+to their dense counterparts. The work we have described so far may also be regarded as
+training a sparse subnetwork. From this perspective the dense counterpart is the complete graph
+where each node is connected to every other.
+
+Accordingly, we may use our algorithm for Discovering Neural Wirings and apply it to
+the task of training other sparse ANNs. Importantly, our method requires no fine-tuning
+or retraining to discover a sparse-subnetwork. This perspective was motivated and guided
+by [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf).
+
+As in [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf), we
+leave the biases and batchnorm dense and use
+a [ResNet-50](https://arxiv.org/abs/1512.03385) with a stride of 2 for the 3x3
+convolution in the bottleneck layers.
+
+The figure below illustrates how the top-1 accuracy of a ResNet50 with the sparsity
+(of the convolutional filters and linear weight -- a sparsity of 0% corresponds to
+the dense network). The figure shows an alternative setting where the first convolutional
+layer (with &lt; 10k parameters $$\approx$$ 0.04% of the total network) is left dense.
 
 {% include sparse-graph.html %}
 
+To generate the figure above we consider only multiples of 10% and the rest is
+interpolated. All models and numbers may be found on our [Github](https://github.com/allenai/dnw)
+though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50.
+
+| Model | 10% of Weights | 20% of Weights |
+| :-------------: | :-------------: | :-------------: |
+| All Layers Sparse (ours)  | 74.0 %  | 76.2 %  |
+| First Layer Dense (ours) | 75.0 %  | 76.6 % |
+|[Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf)| 72.3 % | 74.2 % |
+
+We would like to highlight an interesting interpretation and conclusion we may draw from this result:
+**It is possible to realize the benefits of overparameterization during training even when the resulting model is not itself overparameterized.** In other words, it is possible to train a model that is **small** during inference but **still overparameterized** during training. Though the we only ever use a small percentage
+of the weights during the forwards pass, our network has the _same odds at winning the [initialization lottery](https://arxiv.org/pdf/1907.04840v2.pdf)_
+as a much larger network.
+
+The implementation for training sparse ANNs with our algorithm is quite simple.
+We replace all convolutions with the following [pytorch](https://pytorch.org/) code:
+
+```python
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch import autograd
+
+
+class ChooseEdges(autograd.Function):
+    @staticmethod
+    def forward(ctx, weight, prune_rate):
+        output = weight.clone()
+        _, idx = weight.flatten().abs().sort()
+        p = int(prune_rate * weight.numel())
+        # flat_oup and output access the same memory.
+        flat_oup = output.flatten()
+        flat_oup[idx[:p]] = 0
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        return grad_output, None
+
+
+class SparseConv(nn.Conv2d):
+    def set_prune_rate(self, prune_rate):
+        self.prune_rate = prune_rate
+
+    def forward(self, x):
+        w = ChooseEdges.apply(self.weight, self.prune_rate)
+        x = F.conv2d(
+            x, w,
+            self.bias, self.stride, self.padding, self.dilation, self.groups
+        )
+        return x
+```
 
 ### Appendix A: Proofs
 
 ### Appendix B: _Dynamic Neural Graphs (DNGs)_
 
-### Appendix C: FAQ
+### Appendix C: Acknowledgements
+
+We sincerely thank Tim Dettmers for his assistance and guidance in the experiments regarding sparse networks.
+
+### Appendix D: FAQ

@@ -4,6 +4,7 @@ title: Best New Albums
 description: Starting in April, 2019.
 ---
 
+* All My Heroes Are Cornballs, JPEGMAFIA (September, 2019)
 * Anak Ko, Jay Som (August, 2019)
 * Ginger, BROCKHAMPTON (August, 2019)
 * i,i, Bon Iver (August, 2019)
