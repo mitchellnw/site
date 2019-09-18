@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Discovering Neural Wirings
-date: 2019-9-10
+date: 2019-9-19
 description: How we learn the connectivity of an Artificial Neural Network.
 ---
 blog by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _University of Washington_, and _XNOR.AI_.
