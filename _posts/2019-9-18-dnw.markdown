@@ -1,4 +1,4 @@
----
+w_{uv}---
 layout: post
 title: Discovering Neural Wirings
 date: 2019-9-18
@@ -44,7 +44,7 @@ though this abstraction should feel familiar.
 An _SNG_ is a directed acyclic graph $$G$$ which consists of nodes $$\mathcal{V}$$ and edges $$\mathcal{E}$$. Additionally, each node $$v$$ has output $$\mathcal{Z}_v$$ and input $$\mathcal{I}_v$$. Input data $$X$$ flows into the network through a designated set of nodes $$\mathcal{V}_0$$, and the input to node $$v \in \mathcal{V} \setminus \mathcal{V}_0$$ is a weighted sum of the parent's outputs
 
 $$
-\mathcal{I}_v = \sum_{(u,v) \in \mathcal{E}} w_{u,v}\mathcal{Z}_u
+\mathcal{I}_v = \sum_{(u,v) \in \mathcal{E}} w_{uv}\mathcal{Z}_u
 $$
 
 The output of each node is computed via a parameterized function
@@ -53,7 +53,7 @@ $$
 \mathcal{Z}_v = f_{\theta_v}\left(\mathcal{I}_v\right)
 $$
 
-where $$w_{u,v}$$ and $$\theta_v$$ are the learnable network parameters. The output of the network is then computed via a designated set of nodes $$\mathcal{V}_E$$.
+where $$w_{uv}$$ and $$\theta_v$$ are the learnable network parameters. The output of the network is then computed via a designated set of nodes $$\mathcal{V}_E$$.
 
 In this work we are designing models for Computer Vision, and so each node resembles a single _channel_ (as illustrated below).
 Accordingly, $$f_{\theta_v}$$ performs a convolution over a 2-dimensional matrix (followed by [BatchNorm](https://arxiv.org/abs/1502.03167) and ReLU).
@@ -62,15 +62,15 @@ Accordingly, $$f_{\theta_v}$$ performs a convolution over a 2-dimensional matrix
 
 ### An Algorithm for Discovering Neural Wirings
 
-How do we learn the optimal edge set $$\mathcal{E}$$ during training? We follow recent work (such as [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635)) and attribute the "importance" of a parameter to its magnitude. Accordingly, the link between node $$u$$ and $$v$$ is considered _important_ if $$ \lvert w_{u,v} \rvert \gg 0$$.
+How do we learn the optimal edge set $$\mathcal{E}$$ during training? We follow recent work (such as [The Lottery Ticket Hypothesis](https://arxiv.org/abs/1803.03635)) and attribute the "importance" of a parameter to its magnitude. Accordingly, the link between node $$u$$ and $$v$$ is considered _important_ if $$ \lvert w_{uv} \rvert \gg 0$$.
 
 At each training iteration the edge set is chosen by taking the highest magnitude weights:
 
-$$\mathcal{E} = \{ (u,v) \ : \ \lvert w_{u,v} \rvert > \tau \textrm{ and } u \lt v \}$$
+$$\mathcal{E} = \{ (u,v) \ : \ \lvert w_{uv} \rvert > \tau \textrm{ and } u \lt v \}$$
 
 where $$\tau$$ is chosen so that there are exactly $$k$$ edges and $$u \lt v$$ ensures that the graph is acyclic.
 
-All that remains is to choose a weight update for $$w_{u,v}$$. Recall that most use [backpropogation](https://www.nature.com/articles/323533a0)
+All that remains is to choose a weight update for $$w_{uv}$$. Recall that most use [backpropogation](https://www.nature.com/articles/323533a0)
 where gradients from a loss term $$\mathcal{L}$$ are passed backwards through the network. Using the chain rule gradients may be computed with respect to each network parameter.
 The parameters are then often updated via _stochastic gradient descent_ with some learning rate $$\alpha$$. Conveniently, standard backprop will automatically compute the quantity
 
@@ -78,14 +78,14 @@ $$g_v = - \alpha \frac{\partial \mathcal{L}}{\partial \mathcal{I}_v}$$
 
 Informally, the quantity $$g_v$$ describes how the network _wants_ $$\mathcal{I}_v$$ to change so that the loss will decrease.
 Our rule is therefore to strengthen the connection between $$u$$ and $$v$$ when $$\mathcal{Z}_u$$ aligns with $$g_v$$.
-If node $$u$$ can take $$\mathcal{I}_v$$ where the loss _wants_ it to go, we should add an edge from $$u$$ to $$v$$. We therefore modify $$w_{u,v}$$ via our update rule
+If node $$u$$ can take $$\mathcal{I}_v$$ where the loss _wants_ it to go, we should add an edge from $$u$$ to $$v$$. We therefore modify $$w_{uv}$$ via our update rule
 
-$$w_{u,v} \gets w_{u,v} + \left\langle \mathcal{Z}_u, g_v \right\rangle$$
+$$w_{uv} \gets w_{uv} + \left\langle \mathcal{Z}_u, g_v \right\rangle$$
 
 where $$\langle \cdot, \cdot \rangle$$ denotes an inner product (these quantities are implicitly treated as vectors).
 
-In practice $$w_{u,v}$$ changes only a small amount at each training iteration.
-However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{u,v} \rvert$$ will strengthen to a point where edge $$(u,v)$$ replaces a weaker edge. We show in our [paper](https://arxiv.org/abs/1906.00586) that when swapping does occur, it is beneficial under some assumptions.
+In practice $$w_{uv}$$ changes only a small amount at each training iteration.
+However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{uv} \rvert$$ will strengthen to a point where edge $$(u,v)$$ replaces a weaker edge. We show in our [paper](https://arxiv.org/abs/1906.00586) that when swapping does occur, it is beneficial under some assumptions.
 
 When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term as is standard practice with SGD (weight decay should eventually remove dead ends).
 
@@ -214,13 +214,13 @@ you to reference the [paper](https://arxiv.org/abs/1906.00586)). The state of
 node $$v$$ at time $$t \gt 0$$ is then given by
 
 $$
-\mathcal{Z}_v(t) = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{u,v}Z_u(t-1)\right)
+\mathcal{Z}_v(t) = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{uv}Z_u(t-1)\right)
 $$
 
 We may also consider the setting where $$t$$ takes on a _continuous_ range of values (as in [Neural Ordinary Differential Equations](https://arxiv.org/abs/1806.07366)). The ANN evolves according to the following dynamics:
 
 $$
-{d \mathcal{Z}_v(t) \over d t} = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{u,v}Z_u(t)\right)
+{d \mathcal{Z}_v(t) \over d t} = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{uv}Z_u(t)\right)
 $$
 
 We apply our algorithm for Discovering Neural Wirings to a tiny (41k parameter)
