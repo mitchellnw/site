@@ -6,15 +6,15 @@ description: How we learn the connectivity of an Artificial Neural Network.
 ---
 blog by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _University of Washington_, and _XNOR.AI_.
 
-In this post we discuss the most interesting contributions from our recent paper on [**Discovering Neural Wirings**](https://arxiv.org/abs/1906.00586) 
-(to appear at NeurIPS 2019). Traditionally, the connectivity patterns of Artificial Neural Networks (ANNs) 
-are manually defined or largely constrained. In contrast, we relax the typical notion of layers to 
-allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during 
+In this post we discuss the most interesting contributions from our recent paper on [**Discovering Neural Wirings**](https://arxiv.org/abs/1906.00586)
+(to appear at NeurIPS 2019). Traditionally, the connectivity patterns of Artificial Neural Networks (ANNs)
+are manually defined or largely constrained. In contrast, we relax the typical notion of layers to
+allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during
 training -- as we learn the network parameters we also learn the connectivity.
 
 
 In our pursuit
-we also arrive at the following [conclusion](#sparse-networks-lottery-tickets-overparameterization): 
+we also arrive at the following [conclusion](#sparse-networks-lottery-tickets-overparameterization):
 it is possible to train a model that is small during inference but still overparameterized during training.
 By applying our method to discover sparse ANNs we bridge the gap between
 [Neural Architecture Search](https://arxiv.org/abs/1611.01578) and [Sparse Learning](https://arxiv.org/pdf/1907.04840v2.pdf).
@@ -37,7 +37,7 @@ Concurrent work on [Weight Agnostic Neural Networks](https://weightagnostic.gith
 
 ### _Static Neural Graphs (SNGs)_: A Convenient Abstraction for a Feed Forward ANN
 
-We now describe a convenient abstraction for a feed-forward ANN -- a _Static Neural Graph (SNG)_. Our goal is then to learn the optimal _edge set_ of the SNG. 
+We now describe a convenient abstraction for a feed-forward ANN -- a _Static Neural Graph (SNG)_. Our goal is then to learn the optimal _edge set_ of the SNG.
 We skim over some low level details below and invite you to reference the [paper](https://arxiv.org/abs/1906.00586),
 though this abstraction should feel familiar.
 
@@ -71,20 +71,20 @@ $$\mathcal{E} = \{ (u,v) \ : \ \lvert w_{u,v} \rvert > \tau \textrm{ and } u \lt
 where $$\tau$$ is chosen so that there are exactly $$k$$ edges and $$u \lt v$$ ensures that the graph is acyclic.
 
 All that remains is to choose a weight update for $$w_{u,v}$$. Recall that most use [backpropogation](https://www.nature.com/articles/323533a0)
-where gradients from a loss term $$\mathcal{L}$$ are passed backwards through the network. Using the chain rule gradients may be computed with respect to each network parameter. 
+where gradients from a loss term $$\mathcal{L}$$ are passed backwards through the network. Using the chain rule gradients may be computed with respect to each network parameter.
 The parameters are then often updated via _stochastic gradient descent_ with some learning rate $$\alpha$$. Conveniently, standard backprop will automatically compute the quantity
 
 $$g_v = - \alpha \frac{\partial \mathcal{L}}{\partial \mathcal{I}_v}$$
 
-Informally, the quantity $$g_v$$ describes how the network _wants_ $$\mathcal{I}_v$$ to change so that the loss will decrease. 
-Our rule is therefore to strengthen the connection between $$u$$ and $$v$$ when $$\mathcal{Z}_u$$ aligns with $$g_v$$. 
+Informally, the quantity $$g_v$$ describes how the network _wants_ $$\mathcal{I}_v$$ to change so that the loss will decrease.
+Our rule is therefore to strengthen the connection between $$u$$ and $$v$$ when $$\mathcal{Z}_u$$ aligns with $$g_v$$.
 If node $$u$$ can take $$\mathcal{I}_v$$ where the loss _wants_ it to go, we should add an edge from $$u$$ to $$v$$. We therefore modify $$w_{u,v}$$ via our update rule
 
 $$w_{u,v} \gets w_{u,v} + \left\langle \mathcal{Z}_u, g_v \right\rangle$$
 
 where $$\langle \cdot, \cdot \rangle$$ denotes an inner product (these quantities are implicitly treated as vectors).
 
-In practice $$w_{u,v}$$ changes only a small amount at each training iteration. 
+In practice $$w_{u,v}$$ changes only a small amount at each training iteration.
 However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{u,v} \rvert$$ will strengthen to a point where edge $$(u,v)$$ replaces a weaker edge. We show in our [paper](https://arxiv.org/abs/1906.00586) that when swapping does occur, it is beneficial under some assumptions.
 
 When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term as is standard practice with SGD (weight decay should eventually remove dead ends).
@@ -125,16 +125,19 @@ with sparse learning. As NAS becomes less restrictive and more fine grained,
 finding a good architecture is akin to finding a sparse subnetwork of the complete graph.
 
 Accordingly, we may use our algorithm for Discovering Neural Wirings and apply it to
-the task of training other sparse ANNs. Importantly, our method requires no fine-tuning
-or retraining to discover a sparse subnetwork. This perspective was motivated and guided
-by [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf).
+the task of training other sparse ANNs. Our method requires no fine-tuning
+or retraining to discover a sparse subnetwork. This perspective was guided
+by Dettmers and Zettelmoyer, though we would like to highlight some differences.
+Their work enables faster training, which we do not achieve as our
+backwards pass is still dense. Moreover, their work allows a smart
+redistribution of parameters across layers which we do not attempt. Finally, their
+training is more memory efficient as they actually send unused
+weights to zero while we continue to update them in the backwards pass.
 
-As in [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf), we
-leave the biases and batchnorm dense and use
-a [ResNet-50](https://arxiv.org/abs/1512.03385) with a stride of 2 for the 3x3
-convolution in the bottleneck layers.
-
-The figure below illustrates how the top-1 accuracy of a ResNet50 with the sparsity
+We leave the biases and batchnorm dense and use
+a [tuned ResNet-50](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/Classification/RN50v1.5).
+This mirrors the experimental set-up from Appendix C of [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf).
+The figure below illustrates how top-1 accuracy varies with the sparsity
 (of the convolutional filters and linear weight -- a sparsity of 0% corresponds to
 the dense network). The figure shows an alternative setting where the first convolutional
 layer (with &lt; 10k parameters $$\approx$$ 0.04% of the total network) is left dense.
@@ -149,7 +152,7 @@ though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50 bel
 | :-------------: | :-------------: | :-------------: |
 | All Layers Sparse (ours)  | 74.0 %  | 76.2 %  |
 | First Layer Dense (ours) | 75.0 %  | 76.6 % |
-|[Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf)| 72.3 % | 74.2 % |
+|[Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf)| 72.9 % | 74.9 % |
 
 We would like to highlight an interesting conclusion we may draw from this result:
 **It is possible to realize the benefits of overparameterization during training even when the resulting model is not itself overparameterized.** In other words, it is possible to train a model that is **small** during inference but **still overparameterized** during training. Though the we only ever use a small percentage
@@ -196,11 +199,46 @@ class SparseConv(nn.Conv2d):
         return x
 ```
 
-The full code may be found on our github repo [here](https://github.com/allenai/dnw).
+The figure below illustrates how this code works.
 
+<div style="text-align:center"><img src="/assets/img/dnw_code_fig.png" width="600"/></div>
+
+### Discovering Neural Wirings for _Dynamic Neural Graphs (DNGs)_
+
+We may also apply our algorithm to _processes_ on graphs, where nodes receive
+input and produce output at all times $$t$$ (and the graph is not restricted to be a DAG).
+In the _discrete time_ setting, we consider times
+$$t \in \{0, 1,..., T\}$$ and let the input and output vary with $$t$$
+(we skim over some low level details -- i.e. the initial conditions -- and invite
+you to reference the [paper](https://arxiv.org/abs/1906.00586)). The state of
+node $$v$$ at time $$t \gt 0$$ is then given by
+
+$$
+\mathcal{Z}_v(t) = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{u,v}Z_u(t-1)\right)
+$$
+
+We may also consider the setting where $$t$$ takes on a _continuous_ range of values (as in [Neural Ordinary Differential Equations](https://arxiv.org/abs/1806.07366)). The ANN evolves according to the following dynamics:
+
+$$
+{d \mathcal{Z}_v(t) \over d t} = f_{\theta_v}\left(\sum_{(u,v) \in \mathcal{E}} w_{u,v}Z_u(t)\right)
+$$
+
+We apply our algorithm for Discovering Neural Wirings to a tiny (41k parameter)
+classifier in both the _static_ and _dynamic_ setting.
+
+| Model  | Accuracy (CIFAR-10) |
+| :-------------: | :-------------: |
+Static (Random Graph) | 76.1 $$\pm$$ 0.5|
+Static (ours) | 80.9 $$\pm$$ 0.6 |
+Discrete Time (Random Graph) | 77.3$$\pm$$ 0.7|
+Discrete Time (ours) | 82.3$$\pm$$ 0.6 |
+Continuous (Random Graph) | 78.5 $$\pm$$ 1.2  |
+Continuous (ours) | 83.1 $$\pm$$ 0.3 |
+
+<div style="text-align:center"><img src="/assets/img/dnw_dynamic_fig.png" width="250"/></div>
 ### Citing
 
-We hope that this work inspires future research. If you found this work to be helpful please consider citing:
+If you found this work to be helpful please consider citing:
 
 ```
 @article{Wortsman2019DiscoveringNW,
