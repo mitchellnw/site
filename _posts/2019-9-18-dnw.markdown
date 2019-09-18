@@ -139,7 +139,7 @@ a [tuned ResNet-50](https://github.com/NVIDIA/DeepLearningExamples/tree/master/P
 This mirrors the experimental set-up from Appendix C of [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf).
 The figure below illustrates how top-1 accuracy varies with the sparsity
 (of the convolutional filters and linear weight -- a sparsity of 0% corresponds to
-the dense network). The figure shows an alternative setting where the first convolutional
+the dense network). The figure also shows an alternative setting where the first convolutional
 layer (with &lt; 10k parameters $$\approx$$ 0.04% of the total network) is left dense.
 
 {% include sparse-graph.html %}
