@@ -1,4 +1,4 @@
-w_{uv}---
+---
 layout: post
 title: Discovering Neural Wirings
 date: 2019-9-18
