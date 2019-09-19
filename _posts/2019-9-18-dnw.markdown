@@ -266,7 +266,7 @@ As $$\tilde w_{ik} - w_{ik} = \langle \mathcal{Z}_i, g_k \rangle$$ we are left t
 Rearranging we find that
 $$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert > \lvert \tilde w_{jk} \rvert ^2 -  \lvert \tilde w_{ik}\rvert^2$$ where the right hand side is negative by assumption. Moreover, when the learning rate is small enough the left hand side is positive. If $$\epsilon = \lvert w_{jk} \rvert - \lvert w_{ik} \rvert $$. In the extreme case where $$\lvert \tilde w_{ik} \rvert$$ just exceeds $$\lvert \tilde w_{jk} \rvert$$ then
 
-$$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert \approx \epsilon  \lvert \sim w_{jk} \rvert > 0$$.
+$$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert \approx \epsilon  \lvert \tilde w_{jk} \rvert > 0$$.
 
 
 
