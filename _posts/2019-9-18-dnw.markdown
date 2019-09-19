@@ -121,7 +121,7 @@ In [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840.pdf),
 Dettmers and Zettlemoyer introduce _sparse learning_ -- training ANNs only once while maintaining sparse weights throughout.
 
 Our work aims to unify the problem of neural architecture search
-with sparse learning. As NAS becomes less restrictive and more fine grained,
+with sparse neural network learning. As NAS becomes less restrictive and more fine grained,
 finding a good architecture is akin to finding a sparse subnetwork of the complete graph.
 
 Accordingly, we may use our algorithm for Discovering Neural Wirings and apply it to
