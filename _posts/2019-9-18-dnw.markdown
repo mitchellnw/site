@@ -17,7 +17,7 @@ In our pursuit
 we arrive at the following [conclusion](#sparse-networks-lottery-tickets-overparameterization):
 it is possible to train a model that is small during inference but still overparameterized during training.
 By applying our method to discover sparse ANNs we bridge the gap between
-[Neural Architecture Search](https://arxiv.org/abs/1611.01578) and [sparse neural network learning](https://arxiv.org/pdf/1907.04840v2.pdf).
+[neural architecture search](https://arxiv.org/abs/1611.01578) and [sparse neural network learning](https://arxiv.org/pdf/1907.04840v2.pdf).
 
 Move the slider below to see how the wiring changes when a small network is trained on MNIST for a few epochs (viz code [here](https://github.com/allenai/neural-wire-viz)).
 
