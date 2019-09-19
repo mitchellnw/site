@@ -255,7 +255,7 @@ Let $$\mathcal{A}$$ be the new input to node $$v$$ if swapping _is_ allowed. Lik
 to show that $$\langle \mathcal{A} - \mathcal{I_k}, g_k \rangle \gt \langle \mathcal{B} - \mathcal{I_k}, g_k \rangle$$ as we observe that
 $$ \mathcal{L}(\mathcal{\mathcal{I}_k}) - \mathcal{L}(\mathcal{A}) =  \langle \mathcal{A} - \mathcal{I_k}, g_k \rangle + \mathcal{O}(\alpha^2)$$ via a Taylor approximation.
 
-$$\mathcal{A}$$ may be written as $$\tilde w_{ik} \mathcal{Z}_i + \sum_{(u,k) \in \mathcal{E} \setminus \{i, j\}} w_{uk} \mathcal{Z}_u$$ and $$\mathcal{B}$$ may be written as $$\tilde w_{jk} \mathcal{Z}_j + \sum_{(u,k) \in \mathcal{E} \setminus \{i, j\}} w_{uk} \mathcal{Z}_u$$ and so
+$$\mathcal{A}$$ may be written as $$\tilde w_{ik} \mathcal{Z}_i + \sum_{(u,k) \in \mathcal{E} , \ u\neq i,j} w_{uk} \mathcal{Z}_u$$ and $$\mathcal{B}$$ may be written as $$\tilde w_{jk} \mathcal{Z}_j + \sum_{(u,k) \in \mathcal{E}, \ u\neq i,j} w_{uk} \mathcal{Z}_u$$ and so
 
 $$\langle \mathcal{A} - \mathcal{I_k}, g_k \rangle \gt \langle \mathcal{B} - \mathcal{I_k}, g_k \rangle \iff \tilde w_{ik} \left\langle \mathcal{Z}_i, g_k \right\rangle > \tilde w_{jk} \left\langle \mathcal{Z}_j, g_k \right\rangle$$.
 
