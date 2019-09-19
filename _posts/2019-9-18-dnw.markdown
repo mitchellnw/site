@@ -128,9 +128,10 @@ Accordingly, we may use our algorithm for Discovering Neural Wirings and apply i
 the task of training other sparse ANNs. Our method requires no fine-tuning
 or retraining to discover a sparse subnetwork. This perspective was guided
 by Dettmers and Zettelmoyer, though we would like to highlight some differences.
-Their work enables faster training, which we do not achieve as our
-backwards pass is still dense. Moreover, their work allows a smart
-redistribution of parameters across layers which we do not attempt. Finally, their
+Their work enables faster training, though our
+backwards pass is still dense. Moreover, their work allows a
+redistribution of parameters across layers whereas we consider a fixed sparisty per layer. 
+Finally, their
 training is more memory efficient as they actually send unused
 weights to zero while we continue to update them in the backwards pass.
 
@@ -155,9 +156,11 @@ though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50 bel
 |[Sparse Networks from Scratch (Dettmers & Zettelmoyer)](https://arxiv.org/pdf/1907.04840v2.pdf)| 72.9 % | 74.9 % |
 
 We would like to highlight an interesting conclusion we may draw from this result:
-**It is possible to realize the benefits of overparameterization during training even when the resulting model is not itself overparameterized.** In other words, it is possible to train a model that is **small** during inference but **still overparameterized** during training. Though we only ever use a small percentage
-of the weights during the forwards pass, our network has the _same odds at winning the [initialization lottery](https://arxiv.org/pdf/1907.04840v2.pdf)_
-as a much larger network.
+**It is possible to realize the benefits of overparameterization during training even when the resulting model is sparse.** 
+In other words, it is possible to train a model that is **small** during inference but **still overparameterized** during training. 
+Though we only ever use a small percentage
+of the weights during the forwards pass, our network has similar odds at winning the [initialization lottery](https://arxiv.org/pdf/1907.04840v2.pdf)
+as a larger network.
 
 The implementation for training sparse ANNs with our algorithm is quite simple. We implicitly treat
 each parameter as an edge and so
@@ -264,7 +267,7 @@ If the magnitude of $$w_{ik}$$ increases while the magnitude of $$w_{jk}$$ decre
 As $$\tilde w_{ik} - w_{ik} = \langle \mathcal{Z}_i, g_k \rangle$$ we are left to show that $$\tilde w_{ik}^2 - w_{ik}\tilde w_{ik} > \tilde w_{jk}^2 - w_{jk}\tilde w_{jk}$$. Moreover, since  $$\tilde w w \gt 0$$ we may simplify to $$ \lvert \tilde w_{ik}\rvert^2 - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert > \lvert \tilde w_{jk} \rvert ^2 - \lvert w_{jk} \rvert \lvert \tilde w_{jk} \rvert$$.
 
 Rearranging we find that
-$$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert > \lvert \tilde w_{jk} \rvert ^2 -  \lvert \tilde w_{ik}\rvert^2$$ where the right hand side is negative by assumption. Moreover, when the learning rate is small enough the left hand side is positive. If $$\epsilon = \lvert w_{jk} \rvert - \lvert w_{ik} \rvert $$. In the extreme case where $$\lvert \tilde w_{ik} \rvert$$ just exceeds $$\lvert \tilde w_{jk} \rvert$$ then
+$$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert > \lvert \tilde w_{jk} \rvert ^2 -  \lvert \tilde w_{ik}\rvert^2$$ where the right hand side is negative by assumption. Moreover, when the learning rate is small enough the left hand side is positive. If $$\epsilon = \lvert w_{jk} \rvert - \lvert w_{ik} \rvert $$. In the extreme case where $$\lvert \tilde w_{ik} \rvert$$ _just exceeds_ $$\lvert \tilde w_{jk} \rvert$$ then
 
 $$ \lvert w_{jk} \rvert \lvert \tilde w_{jk}\rvert  - \lvert w_{ik} \rvert \lvert \tilde w_{ik} \rvert \approx \epsilon  \lvert \tilde w_{jk} \rvert > 0$$.
 
