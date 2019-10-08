@@ -130,13 +130,13 @@ or retraining to discover a sparse subnetwork. This perspective was guided
 by Dettmers and Zettelmoyer, though we would like to highlight some differences.
 Their work enables faster training, though our
 backwards pass is still dense. Moreover, their work allows a
-redistribution of parameters across layers whereas we consider a fixed sparisty per layer. 
+redistribution of parameters across layers whereas we consider a fixed sparisty per layer.
 Finally, their
 training is more memory efficient as they actually send unused
 weights to zero while we continue to update them in the backwards pass.
 
 We leave the biases and batchnorm dense and use
-a [tuned ResNet-50](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/Classification/RN50v1.5).
+a [ResNet-50 v1.5](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/Classification/RN50v1.5).
 This mirrors the experimental set-up from Appendix C of [Sparse Networks from Scratch](https://arxiv.org/pdf/1907.04840v2.pdf).
 The figure below illustrates how top-1 accuracy varies with the sparsity
 (of the convolutional filters and linear weight -- a sparsity of 0% corresponds to
@@ -146,8 +146,8 @@ layer (with &lt; 10k parameters $$\approx$$ 0.04% of the total network) is left 
 {% include sparse-graph.html %}
 
 To generate the figure above we consider only multiples of 10% and the rest is
-interpolated. All models and numbers will soon be found on our [Github](https://github.com/allenai/dnw)
-though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50 below.
+interpolated. All models and numbers will may be found at our [Github](https://github.com/allenai/dnw)
+though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50 v1.5 below.
 
 | Model | 10% of Weights | 20% of Weights |
 | :-------------: | :-------------: | :-------------: |
@@ -156,10 +156,9 @@ though we provide relevant **ImageNet Top-1 Accuracy** metrics for ResNet-50 bel
 |[Sparse Networks from Scratch (Dettmers & Zettelmoyer)](https://arxiv.org/pdf/1907.04840v2.pdf)| 72.9 % | 74.9 % |
 
 We would like to highlight an interesting conclusion we may draw from this result:
-**It is possible to realize the benefits of overparameterization during training even when the resulting model is sparse.** 
+**It is possible to realize the benefits of overparameterization during training even when the resulting model is sparse.**
 Though we only ever use a small percentage
-of the weights during the forwards pass, our network has similar odds at winning the [initialization lottery](https://arxiv.org/pdf/1907.04840v2.pdf)
-as a large network.
+of the weights during the forwards pass, our network has good odds at winning the [initialization lottery](https://arxiv.org/pdf/1907.04840v2.pdf).
 
 The implementation for training sparse ANNs with our algorithm is quite simple. We implicitly treat
 each parameter as an edge and so
