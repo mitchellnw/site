@@ -89,6 +89,8 @@ However, if $$\mathcal{Z}_u$$ consistently aligns with $$g_v$$ then $$\lvert w_{
 
 When training, the rest of the network is updated via backprop as usual. In fact, you may notice that the update rule exactly resembles SGD when $$(u,v) \in \mathcal{E}$$. And so the algorithm may be interpreted equivalently as allowing the gradient to flow to, but not through, a set of "potential" edges. In practice we include a momentum and weight decay term as is standard practice with SGD (weight decay should eventually remove dead ends).
 
+As we show in the [paper](https://arxiv.org/abs/1906.00586), this is equivelantly a [straight-through estimator](https://arxiv.org/abs/1308.3432).
+
 ### Putting it Together
 <img src="/assets/gif/dnw.gif" width="600"/>
 
@@ -200,7 +202,7 @@ class SparseConv(nn.Conv2d):
         return x
 ```
 
-The figure below illustrates how this code works.
+The figure below illustrates how this code works. It also emphasizes that we are using a [straight-through estimator](https://arxiv.org/abs/1308.3432) (see paper for more discussion).
 
 <div style="text-align:center"><img src="/assets/img/dnw_code_fig.png" width="600"/></div>
 
