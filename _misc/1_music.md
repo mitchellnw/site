@@ -4,6 +4,7 @@ title: Best New Albums
 description: Starting in April, 2019.
 ---
 
+* Magdalene, FKA Twigs (November, 2019)
 * A Reminder, Stolen Jars (October, 2019)
 * Two Hands, Big Thief (October, 2019)
 * All My Heroes Are Cornballs, JPEGMAFIA (September, 2019)
