@@ -8,9 +8,10 @@ years: [2019]
 
 ## Preprints
 
+----
+
 {% bibliography -f preprints %}
 
------
 
 ## Publications
 
@@ -19,8 +20,7 @@ years: [2019]
   {% bibliography -f papers -q @*[year={{y}}]* %}
 {% endfor %}
 
------
-
+----
 
 ### Senior Thesis (Undergrad)
 
