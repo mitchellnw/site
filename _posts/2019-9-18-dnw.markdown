@@ -7,7 +7,7 @@ description: How we learn the connectivity of an Artificial Neural Network.
 blog by _Mitchell Wortsman_, _Alvaro Herrasti_, _Sarah Pratt_, _Ali Farhadi_ and _Mohammad Rastegari_ from _The Allen Institute for Artificial Intelligence_, _University of Washington_, and _XNOR.AI_.
 
 In this post we discuss the most interesting contributions from our recent paper on [**Discovering Neural Wirings**](https://arxiv.org/abs/1906.00586)
-(to appear at NeurIPS 2019). Traditionally, the connectivity patterns of Artificial Neural Networks (ANNs)
+(NeurIPS 2019). Traditionally, the connectivity patterns of Artificial Neural Networks (ANNs)
 are manually defined or largely constrained. In contrast, we relax the typical notion of layers to
 allow for a much larger space of possible wirings. The wiring of our ANN is not fixed during
 training -- as we learn the network parameters we also learn the connectivity.

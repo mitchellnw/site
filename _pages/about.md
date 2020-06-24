@@ -14,7 +14,7 @@ social: true
 
 I am a PhD student at the University of Washington working with Professor
 [Ali Farhadi](https://homes.cs.washington.edu/~ali/).
-I am interested broadly in Machine Learning.
+I am interested in neural networks.
 
 Previously, I spent a great year as a member of the
 [PRIOR Group](https://prior.allenai.org/) at the
@@ -31,5 +31,5 @@ honors thesis](/publications/#undergraduate-thesis) I was advised by [Kavita Ram
 During undergrad I completed internships at Facebook
 (advised by [Yannis Kalantidis](http://www.skamalas.com/)) & Microsoft.
 
-I am originally from Toronto, ON and enjoy music,
+I am originally from Toronto, Canada and enjoy music,
 skiing, hiking, camping, reading, traveling, and climbing.
