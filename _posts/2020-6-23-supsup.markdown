@@ -4,53 +4,137 @@ title: Supermasks in Superposition
 date: 2020-6-23
 description: Using subnetworks to learn thousands of tasks without forgetting.
 ---
+[Supermasks in Superposition](https://github.com/mitchellnw/supsup) is a project by 
+*Mitchell Wortsman*$$^*$$,
+*[Vivek Ramanujan](https://vkramanuj.github.io/)*$$^*$$, 
+*[Rosanne Liu](http://rosanneliu.com/)*,
+*[Ani Kembhavi](https://anikem.github.io/)*,
+*[Mohammad Rastegari](https://scholar.google.com/citations?user=N4-2Z_cAAAAJ&hl=en)*,
+*[Jason Yosinski](http://yosinski.com/)*,
+and *[Ali Farhadi](https://homes.cs.washington.edu/~ali/)*. 
+
+
 Learning many different tasks sequentially remains a challenge for Artificial Neural Networks (ANNs).
 When learning a new task, networks tend to [*catastrophically forget*](https://arxiv.org/abs/1612.00796)
 information from previous tasks. In this post we discuss Supermasks in Superposition (SupSup),
-a flexible model capable of learning thousands of tasks without forgetting (and without access to task identity).
+a flexible model capable of learning thousands of tasks without forgetting (and without access to task identity info).
 
-SupSup leverages the expressive power of neural network connectivity: an exciting line of recent work ([Zhou *et al.*](https://eng.uber.com/deconstructing-lottery-tickets/), [Ramanujan *et al.*](https://arxiv.org/abs/1911.13299))
+SupSup leverages the expressive power of neural network connectivity. [Zhou *et al.*](https://eng.uber.com/deconstructing-lottery-tickets/)
 demonstrates that even when the weights of an ANN are random and fixed, learning can still occur by modifying the network connectivity.
 Instead of learning the weights, or [jointly learning the weights and connectivity](https://mitchellnw.github.io/blog/2019/dnw/),
-good performance can be achieved by choosing whether each edge in the the network is *on* or *off*. [Later in this post](#supermasks) we detail
-fast algorithms for finding these so-called **supermasks** (a binary mask which specifies if each edge is on or off, exposing a subnetwork which achieves good performance).
+good performance can be achieved by choosing whether each edge in the the network is *on* or *off*. In our [previous work](https://arxiv.org/pdf/1911.13299.pdf) ([video](https://www.youtube.com/watch?v=C6Tj8anJO-Q)) we provide a fast algorithm 
+for finding these so-called **supermasks** (binary masks which specify if each edge is on or off, exposing a subnetwork with good performance).
 
-SupSup uses a neural network with weights that remain fixed and random. For each new task $$i$$ SupSup finds a **supermask** (subnetwork)
+SupSup uses a neural network with weights that remain fixed and random. For each new task $$i$$ SupSup finds a supermask (subnetwork)
 which achieves good performance on task $$i$$. The underlying weights are not modified and so forgetting does not occur. Moreover,
 the underlying weights have minimal storage cost as you only need to save the random seed.
 
 <div style="text-align:center"><img src="/assets/img/supsup_training.png" width="500"/></div>
 
-When the task identity of data is given during inference, the corresponding supermask can then be used
+When the task identity of data is given during inference, the corresponding supermask can be used
 (similar to [Mallya *et al.*](https://arxiv.org/abs/1801.06519) but without the need for a pretrained backbone).
 
 SupSup may also be used even when task identity is unknown during inference (*i.e.* the model does not have access to which
-task it is currently evaluating on). SupSup does so by inferring task identity and using the corresponding supermask (subnetwork).
+task it is currently evaluating on). SupSup does so by first inferring task identity and then using the corresponding supermask (subnetwork).
 
-The supermask trained on task $$i$$ should be [confident](https://arxiv.org/abs/1610.02136) when given data from task $$i$$.
-Therefore, SupSup infers task identity by finding the supermask which produces the lowest entropy (highest confidence) outputs.
+We consider classification tasks, and so the network outputs form a probability distribution over the possible classes.
+The work of [Hendrycks & Gimpel](https://arxiv.org/abs/1610.02136) suggests that the supermask trained on task $$i$$ is more likely to be confident when given data from task $$i$$.
+Therefore, SupSup infers task identity by finding the supermask which produces the lowest entropy (highest confidence) output.
 
 <div style="text-align:center"><img src="/assets/img/supsup_inference.png" width="500"/></div>
 
-As the number of tasks grows large (> 1000), it would be impractical to iterate through each supermask and check the entropy
-of the output distribution. Therefore, we consider a network with all supermasks in weighted 
-**superposition**---mask $$i$$ is weighted by $$\alpha_i$$ (where each $$\alpha_i > 0$$ and $$\sum_i \alpha_i = 1$$ and
-initially each $$\alpha_i = 1/k$$ where $$k$$ is the number of tasks learned so far).
+As the number of tasks grows large (> 1000), it becomes impractical to iterate through each supermask and check the entropy
+of the output distribution. Therefore, we consider a network with *all* supermasks in weighted 
+**superposition**---mask $$i$$ has coefficient $$\alpha_i$$ (where each $$\alpha_i > 0$$ and $$\sum_i \alpha_i = 1$$). We can then infer task identity
+using gradient based optimization to minimize the entropy of the ouputs by modifying the coefficients $$\alpha_i$$.
+<img style="float: right;" src="/assets/img/supsup_runtime.png" width="260">
+In practice we find that a single gradient computation can be sufficient, even for 2500 tasks. Moreover, the speed
+of the forward and backward pass (*i.e.* computing outputs and the entropy gradient) with the superimposed model is *much* 
+faster than trying each supermask learned so far.
+
+SupSup performs well in a variety of different settings for continual learning, where different tasks are learned
+sequentially. For clarity we characterize the continual learning scenarios with a useful taxonomy and mnemonic.
+
 
 ### Continual Learning Scenarios
+In our paper we provide a more complete characterization and justification for different continual learning scenarios.
+However, the key differences between scenarios are whether **1)** the model has access to which task it is performing inference or training on
+and **2)** whether tasks reuse labels. Consider, for example, the task of learning 50 permuations of MNIST. Is the model evaluated on correctly identifying the digit
+or is the model required to identify the digit and permutation? The table below provides our taxonomy, which builds upon
+[van de Ven & Tolias](https://arxiv.org/abs/1904.07734) and [Zeno *et al.*](https://arxiv.org/abs/1803.10123).
 
-### Fantastic Supermasks and How to Find Them
+| Scenario  | Description |
+| :-------------: | :-------------: |
+GG | Task **G**iven during train and **G**iven during inference |
+GNs | Task **G**iven during train, **N**ot inference; **s**hared labels |
+GNu | Task **G**iven during train, **N**ot inference; **u**nshared labels |
+NNs | Task **N**ot given during train **N**or inference; **s**hared labels |
 
-### Broader Impact
+### GG: Task **G**iven during train, **G**iven during inference
 
-### Citing
+We consider fixed, random weights $$W$$ and for each task $$i$$ we learn a binary mask $$M^i$$ such that the network
+with outputs $$\mathbf{p} = f(\mathbf{x}, M^i \odot W)$$ achieves good performance. Note that $$\mathbf{x}$$ denotes
+the input data and $$\mathbf{p}$$ denotes the output class probabilities. We can control the storage cost of SupSup by
+changing the sparsity of the supermasks. Below we provide performance on the challenging
+task of [SplitImageNet](https://arxiv.org/abs/2002.06715), where [ImageNet](http://www.image-net.org/) is split into 100 different 10-way classification
+problems learned sequentially. For Upper Bound, a new set of weights is trained for each task and bytes is storage cost.
 
-If you found this work to be helpful please consider citing:
+| Algorithm  | Avg Top 1 Accuracy (SplitImageNet) | Bytes |
+| :-------------: | :-------------: | :-------------: |
+Upper Bound | 92.55 | 10222.81M |
+SupSup (less sparse) | 89.58 | 195.18M|
+SupSup (more sparse) | 86.37 | 65.50M |
+[BatchE](https://arxiv.org/abs/2002.06715) | 81.50 | 124.99M |
 
-TODO
+### GN: Task **G**iven during train, **N**ot inference
 
-### Acknowledgements
+As mentioned above, SupSup can be used to infer the task identity of given data.
+We consider a network with *all* supermasks in weighted 
+superposition---mask $$i$$ has coefficient $$\alpha_i$$ 
+(initially each $$\alpha_i = 1/k$$ where $$k$$ is the number of tasks learned so far).
+Outputs with the superimposed model are then given by
+
+$$\mathbf{p}_\text{sup} = f\left(\mathbf{x}, \left( \sum_i \alpha_i M^i \right) \odot W\right)$$
+
+where $$\odot$$ denotes an elementwise product. SupSup infers task identity by minimizing entropy $$\mathcal{H}$$ with gradient
+based optimization, as the correct suprmask should produce a low entropy output. In this blog post we only provide results
+for the most inexpensive setting, where $$\textbf{x}$$ is a single data point and task identity is inferred with a
+single gradient computation via
+
+$$\text{argmax}_i  \left(- \frac{\partial \mathcal{H}\left(\mathbf{p}_\text{sup}\right)}{\partial \alpha_i}\right)$$
+
+as entropy is decreasing maximally in this coordinate. 
+
+We show results below for LeNet-300-100 (left) and a fully
+connected network with two hidden layers of size 1024 (right) trained sequentially on 250 permutations of
+the MNIST pixels (1000 training batches per task). In this scenario SupSup outperforms methods such as [BatchE](https://arxiv.org/abs/2002.06715) and [PSP](https://papers.nips.cc/paper/9269-superposition-of-many-models-into-one)
+which operate in scenario GG---they have access to the task during inference. Results are provided for
+both entropy $$\mathcal{H}$$ and an alternative metric $$\mathcal{G}$$ described in the paper.
+
+<div style="text-align:center"><img src="/assets/img/supsup_v1v2.png" width="650"/></div>
+
+### NN: Task **N**ot given during train **N**or inference
+
+SupSup can also be extended to the scenario where task information is not available, even during training---the model does
+not know when tasks switch. We consider PermutedMNIST, where each task is a different permutation of the MNIST pixels.
+We train on each task for 1000 batches (the model does not have access to this iteration number). 
+Every 100 batches the model must choose to allocate a new mask or pick an existing mask. SupSup allocates a new mask
+if it is uncertain when inferring task identity. If SupSup is uncertain about task identity 
+($$\nabla_\alpha \mathcal{H}$$ is approximately uniform) then the data
+likely doesn't belong to a task learned so far. 
+
+We illustrate below that SupSup is able to sequentially learn 2500 permutations of MNIST with minimal forgetting.
+
+<div style="text-align:center"><img src="/assets/img/supsup_long.png" width="650"/></div>
+
+### And more...
+
+See the paper for more thorough experiments and methods, which include storing the
+entire, growing set of supermasks in a constant-sized reservoir by 
+implicitly encoding them as attractors in a fixed-sized [Hopfield network](https://en.wikipedia.org/wiki/Hopfield_network).
+
 
 ### Comments and FAQ
 
-To comment raise an issue on our github repo TODO.
+To comment raise an issue on our [github repo](https://github.com/mitchellnw/supsup).
+We will post and answer FAQ here.
