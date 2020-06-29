@@ -4,14 +4,14 @@ title: Supermasks in Superposition
 date: 2020-6-23
 description: Using subnetworks to learn thousands of tasks without forgetting.
 ---
-[Supermasks in Superposition](https://github.com/mitchellnw/supsup) is a project by 
+[Supermasks in Superposition](https://arxiv.org/abs/2006.14769) is a project by
 *Mitchell Wortsman*$$^*$$,
-*[Vivek Ramanujan](https://vkramanuj.github.io/)*$$^*$$, 
+*[Vivek Ramanujan](https://vkramanuj.github.io/)*$$^*$$,
 *[Rosanne Liu](http://rosanneliu.com/)*,
 *[Ani Kembhavi](https://anikem.github.io/)*,
 *[Mohammad Rastegari](https://scholar.google.com/citations?user=N4-2Z_cAAAAJ&hl=en)*,
 *[Jason Yosinski](http://yosinski.com/)*,
-and *[Ali Farhadi](https://homes.cs.washington.edu/~ali/)*. 
+and *[Ali Farhadi](https://homes.cs.washington.edu/~ali/)*.
 
 
 Learning many different tasks sequentially remains a challenge for Artificial Neural Networks (ANNs).
@@ -22,7 +22,7 @@ a flexible model capable of learning thousands of tasks without forgetting (and 
 SupSup leverages the expressive power of neural network connectivity. [Zhou *et al.*](https://eng.uber.com/deconstructing-lottery-tickets/)
 demonstrates that even when the weights of an ANN are random and fixed, learning can still occur by modifying the network connectivity.
 Instead of learning the weights, or [jointly learning the weights and connectivity](https://mitchellnw.github.io/blog/2019/dnw/),
-good performance can be achieved by choosing whether each edge in the the network is *on* or *off*. In our [previous work](https://arxiv.org/pdf/1911.13299.pdf) ([video](https://www.youtube.com/watch?v=C6Tj8anJO-Q)) we provide a fast algorithm 
+good performance can be achieved by choosing whether each edge in the the network is *on* or *off*. In our [previous work](https://arxiv.org/pdf/1911.13299.pdf) ([video](https://www.youtube.com/watch?v=C6Tj8anJO-Q)) we provide a fast algorithm
 for finding these so-called **supermasks** (binary masks which specify if each edge is on or off, exposing a subnetwork with good performance).
 
 SupSup uses a neural network with weights that remain fixed and random. For each new task $$i$$ SupSup finds a supermask (subnetwork)
@@ -44,12 +44,12 @@ Therefore, SupSup infers task identity by finding the supermask which produces t
 <div style="text-align:center"><img src="/assets/img/supsup_inference.png" width="500"/></div>
 
 As the number of tasks grows large (> 1000), it becomes impractical to iterate through each supermask and check the entropy
-of the output distribution. Therefore, we consider a network with *all* supermasks in weighted 
+of the output distribution. Therefore, we consider a network with *all* supermasks in weighted
 **superposition**---mask $$i$$ has coefficient $$\alpha_i$$ (where each $$\alpha_i > 0$$ and $$\sum_i \alpha_i = 1$$). We can then infer task identity
 using gradient based optimization to minimize the entropy of the ouputs by modifying the coefficients $$\alpha_i$$.
 <img style="float: right;" src="/assets/img/supsup_runtime.png" width="260">
 In practice we find that a single gradient computation can be sufficient, even for 2500 tasks. Moreover, the speed
-of the forward and backward pass (*i.e.* computing outputs and the entropy gradient) with the superimposed model is *much* 
+of the forward and backward pass (*i.e.* computing outputs and the entropy gradient) with the superimposed model is *much*
 faster than trying each supermask learned so far.
 
 SupSup performs well in a variety of different settings for continual learning, where different tasks are learned
@@ -57,7 +57,7 @@ sequentially. For clarity we characterize the continual learning scenarios with 
 
 
 ### Continual Learning Scenarios
-In our paper we provide a more complete characterization and justification for different continual learning scenarios.
+In our [paper](https://arxiv.org/abs/2006.14769) we provide a more complete characterization and justification for different continual learning scenarios.
 However, the key differences between scenarios are whether **1)** the model has access to which task it is performing inference or training on
 and **2)** whether tasks reuse labels. Consider, for example, the task of learning 50 permuations of MNIST. Is the model evaluated on correctly identifying the digit
 or is the model required to identify the digit and permutation? The table below provides our taxonomy, which builds upon
@@ -89,8 +89,8 @@ SupSup (more sparse) | 86.37 | 65.50M |
 ### GN: Task **G**iven during train, **N**ot inference
 
 As mentioned above, SupSup can be used to infer the task identity of given data.
-We consider a network with *all* supermasks in weighted 
-superposition---mask $$i$$ has coefficient $$\alpha_i$$ 
+We consider a network with *all* supermasks in weighted
+superposition---mask $$i$$ has coefficient $$\alpha_i$$
 (initially each $$\alpha_i = 1/k$$ where $$k$$ is the number of tasks learned so far).
 Outputs with the superimposed model are then given by
 
@@ -103,13 +103,13 @@ single gradient computation via
 
 $$\text{argmax}_i  \left(- \frac{\partial \mathcal{H}\left(\mathbf{p}_\text{sup}\right)}{\partial \alpha_i}\right)$$
 
-as entropy is decreasing maximally in this coordinate. 
+as entropy is decreasing maximally in this coordinate.
 
 We show results below for LeNet-300-100 (left) and a fully
 connected network with two hidden layers of size 1024 (right) trained sequentially on 250 permutations of
 the MNIST pixels (1000 training batches per task). In this scenario SupSup outperforms methods such as [BatchE](https://arxiv.org/abs/2002.06715) and [PSP](https://papers.nips.cc/paper/9269-superposition-of-many-models-into-one)
 which operate in scenario GG---they have access to the task during inference. Results are provided for
-both entropy $$\mathcal{H}$$ and an alternative metric $$\mathcal{G}$$ described in the paper.
+both entropy $$\mathcal{H}$$ and an alternative metric $$\mathcal{G}$$ described in the [paper](https://arxiv.org/abs/2006.14769).
 
 <div style="text-align:center"><img src="/assets/img/supsup_v1v2.png" width="650"/></div>
 
@@ -117,11 +117,11 @@ both entropy $$\mathcal{H}$$ and an alternative metric $$\mathcal{G}$$ described
 
 SupSup can also be extended to the scenario where task information is not available, even during training---the model does
 not know when tasks switch. We consider PermutedMNIST, where each task is a different permutation of the MNIST pixels.
-We train on each task for 1000 batches (the model does not have access to this iteration number). 
+We train on each task for 1000 batches (the model does not have access to this iteration number).
 Every 100 batches the model must choose to allocate a new mask or pick an existing mask. SupSup allocates a new mask
-if it is uncertain when inferring task identity. If SupSup is uncertain about task identity 
+if it is uncertain when inferring task identity. If SupSup is uncertain about task identity
 ($$\nabla_\alpha \mathcal{H}$$ is approximately uniform) then the data
-likely doesn't belong to a task learned so far. 
+likely doesn't belong to a task learned so far.
 
 We illustrate below that SupSup is able to sequentially learn 2500 permutations of MNIST with minimal forgetting.
 
@@ -129,8 +129,8 @@ We illustrate below that SupSup is able to sequentially learn 2500 permutations 
 
 ### And more...
 
-See the paper for more thorough experiments and methods, which include storing the
-entire, growing set of supermasks in a constant-sized reservoir by 
+See the [paper](https://arxiv.org/abs/2006.14769) for more thorough experiments and methods, which include storing the
+entire, growing set of supermasks in a constant-sized reservoir by
 implicitly encoding them as attractors in a fixed-sized [Hopfield network](https://en.wikipedia.org/wiki/Hopfield_network).
 
 
