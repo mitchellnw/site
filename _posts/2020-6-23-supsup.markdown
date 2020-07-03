@@ -136,5 +136,5 @@ implicitly encoding them as attractors in a fixed-sized [Hopfield network](https
 
 ### Comments and FAQ
 
-To comment raise an issue on our [github repo](https://github.com/mitchellnw/supsup).
+To comment raise an issue on our [github repo](https://github.com/RAIVNLab/supsup).
 We will post and answer FAQ here.
