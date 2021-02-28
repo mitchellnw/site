@@ -47,10 +47,9 @@ As the number of tasks grows large (> 1000), it becomes impractical to iterate t
 of the output distribution. Therefore, we consider a network with *all* supermasks in weighted
 **superposition**---mask $$i$$ has coefficient $$\alpha_i$$ (where each $$\alpha_i > 0$$ and $$\sum_i \alpha_i = 1$$). We can then infer task identity
 using gradient based optimization to minimize the entropy of the ouputs by modifying the coefficients $$\alpha_i$$.
-<img style="float: right;" src="/assets/img/supsup_runtime.png" width="260">
 In practice we find that a single gradient computation can be sufficient, even for 2500 tasks. Moreover, the speed
-of the forward and backward pass (*i.e.* computing outputs and the entropy gradient) with the superimposed model is *much*
-faster than trying each supermask learned so far.
+of the forward and backward pass (*i.e.* computing outputs and the entropy gradient) with the superimposed model is
+faster than sequentially trying each supermask learned so far.
 
 SupSup performs well in a variety of different settings for continual learning, where different tasks are learned
 sequentially. For clarity we characterize the continual learning scenarios with a useful taxonomy and mnemonic.
