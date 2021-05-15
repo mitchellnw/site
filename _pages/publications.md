@@ -3,12 +3,8 @@ layout: publications
 permalink: /publications/
 title: publications
 description: publications
-years: [2020, 2019]
+years: [2021, 2020, 2019]
 ---
-
-## Preprints
-
-{% bibliography -f preprints %}
 
 ## Publications
 
