@@ -15,7 +15,7 @@ social: true
 I am a PhD student at the University of Washington working with Professor
 [Ali Farhadi](https://homes.cs.washington.edu/~ali/).
 I am interested in understanding and improving deep learning. My research so
-far has studied neural network [sub](https://arxiv.org/abs/1911.13299)-[networks](https://arxiv.org/abs/2006.14769) and [subspaces](https://arxiv.org/abs/2102.10472).
+far has studied neural network [sub](https://arxiv.org/abs/1911.13299)-[networks](https://arxiv.org/abs/2006.14769), [subspaces](https://arxiv.org/abs/2102.10472), and [robustness](https://arxiv.org/abs/2109.01903).
 
 Previously, I spent a great year as a member of the
 [PRIOR Group](https://prior.allenai.org/) at the

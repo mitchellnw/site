@@ -6,6 +6,10 @@ description: publications
 years: [2021, 2020, 2019]
 ---
 
+## Preprints
+
+{% bibliography -f preprints %}
+
 ## Publications
 
 {% for y in page.years %}
