@@ -49,6 +49,8 @@ Somani*:
 Ilharco*:
     url: http://gabrielilharco.com/
 
+Ilharco:
+    url: http://gabrielilharco.com/
 Kim:
     url: https://jongwook.kim/
 
@@ -60,3 +62,27 @@ Namkoong:
 
 Schmidt:
     url: https://people.csail.mit.edu/ludwigs/
+
+Schmidt*:
+    url: https://people.csail.mit.edu/ludwigs/
+
+Morcos:
+    url: http://www.arimorcos.com/
+
+Kornblith*:
+    url: https://simonster.com/
+
+Kornblith:
+    url: https://simonster.com/
+
+Carmon*:
+    url: https://www.cs.tau.ac.il/~ycarmon/
+
+Roelofs:
+    url: https://github.com/rolloff
+
+Gontijo-Lopes:
+    url: https://raphagl.com/
+
+Gadre:
+    url: https://sagadre.github.io/

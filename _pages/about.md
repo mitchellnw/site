@@ -12,19 +12,20 @@ news: true
 social: true
 ---
 
-I am a PhD student at the University of Washington working with Professor
-[Ali Farhadi](https://homes.cs.washington.edu/~ali/).
+I am a PhD student at the University of Washington co-advised by
+[Ali Farhadi](https://homes.cs.washington.edu/~ali/) and
+[Ludwig Schmidt](https://people.csail.mit.edu/ludwigs/).
 I am interested in understanding and improving deep learning. My research so
-far has studied neural network [sub](https://arxiv.org/abs/1911.13299)-[networks](https://arxiv.org/abs/2006.14769), [subspaces](https://arxiv.org/abs/2102.10472), and [robustness](https://arxiv.org/abs/2109.01903).
+far has studied [fine-tuning](https://arxiv.org/abs/2203.05482), 
+[robustness](https://arxiv.org/abs/2109.01903), neural network 
+[sub](https://arxiv.org/abs/1911.13299)-[networks](https://arxiv.org/abs/2006.14769), [subspaces](https://arxiv.org/abs/2102.10472).
 
 Previously, I spent a great year as a member of the
 [PRIOR Group](https://prior.allenai.org/) at the
 [Allen Institute for AI (AI2)](https://allenai.org/)
-under the supervision of [Roozbeh Mottaghi](https://cs.stanford.edu/~roozbeh/).
-At AI2 I have also received mentorship from
-[Mohammad Rastegari](https://allenai.org/team/mohammadr/),
-[Kiana Ehsani](https://homes.cs.washington.edu/~kianae/) and
-[Ali](https://homes.cs.washington.edu/~ali/).
+under the supervision of [Roozbeh Mottaghi](https://cs.stanford.edu/~roozbeh/),
+and as a research intern at Apple with 
+[Mohammad Rastegari](https://allenai.org/team/mohammadr/).
 
 I completed my undergraduate degree in Applied Mathematics and Computer Science
 at Brown University in Providence, RI. For my [senior
