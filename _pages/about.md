@@ -24,7 +24,7 @@ and [subspaces](https://arxiv.org/abs/2102.10472).
 Previously, I spent a great year as a member of the
 [PRIOR Group](https://prior.allenai.org/) at the
 [Allen Institute for AI (AI2)](https://allenai.org/)
-under the supervision of [Roozbeh Mottaghi](https://cs.stanford.edu/~roozbeh/),
+with [Roozbeh Mottaghi](https://cs.stanford.edu/~roozbeh/),
 and as a research intern at Apple with 
 [Mohammad Rastegari](https://allenai.org/team/mohammadr/).
 
